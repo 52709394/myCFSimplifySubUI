@@ -71,6 +71,37 @@ export function layoutText(title, text) {
 	<style>
 		${body}
 
+		/* 返回顶部按钮样式 */
+		#back-to-top {
+			position: fixed;
+			bottom: 30px;
+			right: 30px;
+			width: 50px;
+			height: 50px;
+			background-color: #333;
+			color: white;
+			border: none;
+			border-radius: 50%;
+			cursor: pointer;
+			font-size: 20px;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+		}
+		
+		#back-to-top:hover {
+			background-color: #555;
+		}
+		
+		#back-to-top.visible {
+			opacity: 1;
+			visibility: visible;
+		}		
+
 		/* 固定顶部导航样式 */
 		.tutorial-nav {
 			top: 0;

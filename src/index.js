@@ -198,7 +198,7 @@ async function userSubUrl(request, env) {
 			`, {
 			headers: {
 				"content-type": "text/html; charset=UTF-8",
-				"Set-Cookie": `${COOKIE_NAME}=${COOKIE_VALUE}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
+				"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
 				"Location": SubConfig.sub_url + "",
 			}
 		});
@@ -238,10 +238,13 @@ async function userSubUrl(request, env) {
 			await getUsersData(env)
 
 
-
 			return new Response(
-				`${url.origin}${SubConfig.sub_url}/renew2`
-			);
+				`${url.origin}${SubConfig.sub_url}/renew2`, {
+				headers: {
+					"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
+					"Location": SubConfig.sub_url + "",
+				}
+			});
 
 		}
 		catch (e) {
@@ -341,6 +344,9 @@ async function userSubHome(url, env) {
 			</div>
 		</nav>	
 
+		<!-- 返回顶部按钮 -->
+        <button id="back-to-top" title="返回顶部">↑</button>
+
 		<p><a href="${SubConfig.sub_url}/update">更新数据</a></p><br/>
 	`;
 
@@ -379,10 +385,31 @@ async function userSubHome(url, env) {
 
 	output += `
 			<script>
+			    // 获取返回顶部按钮
+                const backToTopButton = document.getElementById('back-to-top');	
 				// 获取元素
 				const modal = document.getElementById("imageModal");
 				const title = document.querySelector(".image-title");
 				const image = document.querySelector(".modal-image");
+
+				// 监听滚动事件
+				window.addEventListener('scroll', function() {
+					// 如果页面垂直滚动距离大于250px，显示按钮，否则隐藏
+					if (window.pageYOffset > 250) {
+						backToTopButton.classList.add('visible');
+					} else {
+						backToTopButton.classList.remove('visible');
+					}
+				});
+				
+				// 点击按钮返回顶部
+				backToTopButton.addEventListener('click', function() {
+					// 平滑滚动到顶部
+					window.scrollTo({
+						top: 0,
+						behavior: 'smooth'
+					});
+				});						
 
 				function copyContent(title , text) {
 					// 创建一个临时的 textarea 元素
