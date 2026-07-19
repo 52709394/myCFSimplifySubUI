@@ -1,0 +1,12 @@
+name = "3x-ui-sub"
+main = "src/index.js"
+compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2024-09-23"
+
+
+[[kv_namespaces]]
+binding = "sub_data"
+id = "5c2a9c2631094d18bd5f9a2fd05e0d6e" 
+
+[triggers]
+crons = ["0 19 * * *"]
