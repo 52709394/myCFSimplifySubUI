@@ -6,7 +6,7 @@ compatibility_date = "2024-09-23"
 
 [[kv_namespaces]]
 binding = "sub_data"
-id = "5c2a9c2631094d18bd5f9a2fd05e0d6e" 
+id = "a591ef9134944b4f851502278da15ec9" 
 
 [triggers]
 crons = ["0 19 * * *"]
