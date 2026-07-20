@@ -160,6 +160,7 @@ export function originConfig() {
             "cookie_value": "52709394",
             "xui_url": null,
             "xui_token": null,
+            "none_atuo_select": null,
             "none_front": null,
             "none_back": null,
             "all_user": {
@@ -178,6 +179,7 @@ export function originConfig() {
             "users": {
                 "test-user": {
                     "enable": null,
+                    "none_atuo_select": null,
                     "addr": null,
                     "port": null,
                     "security": null,

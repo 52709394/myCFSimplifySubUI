@@ -105,59 +105,76 @@ export default {
 async function userSubUrl(request, env) {
 	const url = new URL(request.url);
 
-	let cached = await env.sub_data.get("usersData");
-
-	if (!cached) {
-		await getUsersData(env)
-		cached = await env.sub_data.get("usersData");
-	}
-
-	const users = JSON.parse(cached)
-
 	// 登录凭证（写死在代码里，实际可用 KV / D1 数据库存储）
 	const USERNAME = SubConfig.web_user;
 	const PASSWORD = SubConfig.web_password;
 	const COOKIE_NAME = SubConfig.cookie_name;
 	const COOKIE_VALUE = SubConfig.cookie_value;
 
-	if (url.pathname === SubConfig.sub_url + "/home.html") {
-		// 检查是否已登录（cookie 中是否有 token）
-		const cookie = request.headers.get("Cookie") || "";
-		if (cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
-			// 已登录，允许访问
-			let output = await userSubHome(url, env)
+	const cookie = request.headers.get("Cookie") || "";
+	if (!cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
 
-			return subUrl(output);
-		};
+		// 登录处理
+		if (url.pathname === SubConfig.sub_url + "/login" && request.method === "POST") {
+			const formData = await request.formData();
+			const username = formData.get("username");
+			const password = formData.get("password");
+
+			if (username === USERNAME && password === PASSWORD) {
+				// 登录成功，设置 Cookie
+				return new Response(null, {
+					status: 302,
+					headers: {
+						"Set-Cookie": `${COOKIE_NAME}=${COOKIE_VALUE}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
+						"Location": SubConfig.sub_url + "",
+					},
+				});
+			} else {
+				const text = layoutText('logout', `账号或密码错误 <a href='${SubConfig.sub_url}/login'>返回</a>`)
+				return new Response(text, {
+					headers: { "Content-Type": "text/html; charset=utf-8" },
+				});
+			}
+		}
+
+		// 未登录，展示登录页面
+		if (url.pathname === SubConfig.sub_url + "/login" ||
+			url.pathname === SubConfig.sub_url + "/home.html" ||
+			url.pathname === SubConfig.sub_url + "/set.html"
+		) {
+
+			const text = loginText(SubConfig.sub_url + "/login")
+
+			return new Response(
+				text,
+				{ headers: { "Content-Type": "text/html; charset=utf-8" } }
+			);
+		}
+
+		return nginx();
+
+	};
+
+	if (url.pathname === SubConfig.sub_url + "/home.html") {
+
+		let output = await userSubHome(url, env)
+		return subUrl(output);
 	};
 
 
 	if (url.pathname === SubConfig.sub_url + "/set.html") {
-		// 检查是否已登录（cookie 中是否有 token）
-		const cookie = request.headers.get("Cookie") || "";
-		if (cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
-			// 已登录，允许访问
-			const output = await userSubSet(url, env)
 
-			return subUrl(output);
-		};
+		const output = await userSubSet(url, env)
+
+		return subUrl(output);
 	};
 
 	if (url.pathname === SubConfig.sub_url + "/update" ||
 		url.pathname === SubConfig.sub_url + "/init" ||
 		url.pathname === SubConfig.sub_url + "/renew2") {
 
-		// 检查是否已登录（cookie 中是否有 token）
-		const cookie = request.headers.get("Cookie") || "";
-		if (!cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
-			// 已登录，允许访问
-			return;
-		};
-
-
 		let _url = ""
 		let str = ""
-
 
 		if (url.pathname === SubConfig.sub_url + "/update") {
 			_url = SubConfig.sub_url + "/home.html"
@@ -178,7 +195,6 @@ async function userSubUrl(request, env) {
 			str = "配置更新成功"
 		}
 
-		// await getIpsStr(env)
 		await getUsersData(env)
 
 		return new Response(`
@@ -267,43 +283,6 @@ async function userSubUrl(request, env) {
 				"Location": SubConfig.sub_url + "",
 			},
 		});
-	}
-
-	// 登录处理
-	if (url.pathname === SubConfig.sub_url + "/login" && request.method === "POST") {
-		const formData = await request.formData();
-		const username = formData.get("username");
-		const password = formData.get("password");
-
-		if (username === USERNAME && password === PASSWORD) {
-			// 登录成功，设置 Cookie
-			return new Response(null, {
-				status: 302,
-				headers: {
-					"Set-Cookie": `${COOKIE_NAME}=${COOKIE_VALUE}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
-					"Location": SubConfig.sub_url + "",
-				},
-			});
-		} else {
-			const text = layoutText('logout', `账号或密码错误 <a href='${SubConfig.sub_url}/login'>返回</a>`)
-			return new Response(text, {
-				headers: { "Content-Type": "text/html; charset=utf-8" },
-			});
-		}
-	}
-
-	// 未登录，展示登录页面
-	if (url.pathname === SubConfig.sub_url + "/login" ||
-		url.pathname === SubConfig.sub_url + "/home.html" ||
-		url.pathname === SubConfig.sub_url + "/set.html"
-	) {
-
-		const text = loginText(SubConfig.sub_url + "/login")
-
-		return new Response(
-			text,
-			{ headers: { "Content-Type": "text/html; charset=utf-8" } }
-		);
 	}
 
 	return nginx();
@@ -470,107 +449,147 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 	const COOKIE_NAME = "userSub";
 	const COOKIE_VALUE = "DaiBaojian";
 
+	const cookie = request.headers.get("Cookie") || "";
+	// 检查是否已登录（cookie 中是否有 token）
+	if (!cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`) &&
+		(url.pathname != userUrl + "logout")) {
+
+		// 登录处理
+		if (url.pathname === userUrl + "home" && request.method === "POST") {
+			const formData = await request.formData();
+			const username = formData.get("username");
+			const password = formData.get("password");
+
+			if (username === USERNAME && password === PASSWORD) {
+				// 登录成功，设置 Cookie
+				return new Response(null, {
+					status: 302,
+					headers: {
+						"Set-Cookie": `${COOKIE_NAME}=${COOKIE_VALUE}; path=${userUrl}home; HttpOnly; Secure; SameSite=Strict`,
+						"Location": userUrl + "home",
+					},
+				});
+			} else {
+				const text = layoutText('logout', `账号或密码错误 <a href='${userUrl}home'>返回</a>`)
+				return new Response(text, {
+					headers: { "Content-Type": "text/html; charset=utf-8" },
+				});
+			}
+		}
+
+		// 未登录，展示登录页面
+		if (url.pathname === userUrl + "home") {
+
+			const text = loginText(userUrl + "home")
+
+			return new Response(
+				text,
+				{ headers: { "Content-Type": "text/html; charset=utf-8" } }
+			);
+		};
+
+		console.log(555);
+
+		return nginx();
+
+	}
+
 
 	if (url.pathname === userUrl + "home") {
-		// 检查是否已登录（cookie 中是否有 token）
-		const cookie = request.headers.get("Cookie") || "";
-		// 检查是否已登录（cookie 中是否有 token）
-		if (cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
-			// 已登录，允许访问
 
-			let output = "";
-			output += `
-			<h1>${name}</h1>
-			<p> 已使用 上行:${up},下行:${down}</p>
-			<h2>订阅</h2>
-			<p>提示:手机端,可以长按二维码,选择保存图片,可以给 app 扫描图片使用</p>	
-			<label>html(v2rayN,v2rayNG,小火箭 等等 app): </label> <br/> <br/>
-			<details open>
-			<summary>二维码 展开 / 收起</summary>
-			<div>
-				<img class="user-image" src="${url.origin}${userUrl}Qr" alt="${url.origin}${userUrl}html">
-			</div>
-			</details>
-			<br/>
-			<button class="link-style" onclick="copyContent('${name}-html','${url.origin}${userUrl}html')">复制"html"链接</button><br/>
-			<br/><br/>
-			<label>json(singbox app 专用): </label>  <br/> <br/>
-			<details>
-			<summary>二维码 展开 / 收起</summary>
-			<div>
-				<img class="user-image" src="${url.origin}${userUrl}SbQr" alt="${url.origin}${userUrl}json">
-			</div>
-			</details>
-			<br/>
-			<button class="link-style" onclick="copyContent('${name}-json','${url.origin}${userUrl}json')">复制"json"链接</button>
-			<br/><br/>
-			<label>yaml(clash mi 专用): </label>  <br/><br/>
-			<details>
-			<summary>二维码 展开 / 收起</summary>
-			<div>
-				<img class="user-image" src="${url.origin}${userUrl}CMQr" alt="${url.origin}${userUrl}yaml">
-			</div>
-			</details>
-			<br/>
-			<button class="link-style" onclick="copyContent('${name}-yaml','${url.origin}${userUrl}yaml')">复制"yaml"链接</button><br/><br/><br/>
-			<h2>工具</h2>
+		let output = "";
+		output += `
+		<h1>${name}</h1>
+		<p> 已使用 上行:${up},下行:${down}</p>
+		<h2>订阅</h2>
+		<p>提示:手机端,可以长按二维码,选择保存图片,可以给 app 扫描图片使用</p>	
+		<label>html(v2rayN,v2rayNG,小火箭 等等 app): </label> <br/> <br/>
+		<details open>
+		<summary>二维码 展开 / 收起</summary>
+		<div>
+			<img class="user-image" src="${url.origin}${userUrl}Qr" alt="${url.origin}${userUrl}html">
+		</div>
+		</details>
+		<br/>
+		<button class="link-style" onclick="copyContent('${name}-html','${url.origin}${userUrl}html')">复制"html"链接</button><br/>
+		<br/><br/>
+		<label>json(singbox app 专用): </label>  <br/> <br/>
+		<details>
+		<summary>二维码 展开 / 收起</summary>
+		<div>
+			<img class="user-image" src="${url.origin}${userUrl}SbQr" alt="${url.origin}${userUrl}json">
+		</div>
+		</details>
+		<br/>
+		<button class="link-style" onclick="copyContent('${name}-json','${url.origin}${userUrl}json')">复制"json"链接</button>
+		<br/><br/>
+		<label>yaml(clash mi 专用): </label>  <br/><br/>
+		<details>
+		<summary>二维码 展开 / 收起</summary>
+		<div>
+			<img class="user-image" src="${url.origin}${userUrl}CMQr" alt="${url.origin}${userUrl}yaml">
+		</div>
+		</details>
+		<br/>
+		<button class="link-style" onclick="copyContent('${name}-yaml','${url.origin}${userUrl}yaml')">复制"yaml"链接</button><br/><br/><br/>
+		<h2>工具</h2>
 
-			<p>windows</p>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#v2rayN" target="_blank" rel="noopener noreferrer" > v2rayN(建议) </a>
-			<a href="https://guide.myargo.de5.net/v2rayN" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
-			<br/><br/>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a>
-			<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a>
-			<p>Mac os</p>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#v2rayN" target="_blank" rel="noopener noreferrer" > v2rayN(建议) </a> 
-			<br/><br/>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/other.html#sb11115m" target="_blank" rel="noopener noreferrer" > sing-box app </a>
-			<br/><br/>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a>
-			<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
-			<p>安卓</p>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#v2rayNG" target="_blank" rel="noopener noreferrer" > v2rayNG(建议) </a> 
-			<a href="https://guide.myargo.de5.net/v2rayNG" target="_blank" rel="noopener noreferrer" > (使用教程) </a>
-			<br/><br/>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/other.html#sb11115a" target="_blank" rel="noopener noreferrer" > sing-box app </a>
-			<br/><br/>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a>
-			<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
-			<p>apple 移动端 app (也支持Mac os)</p>
-			<a href="https://apps.apple.com/us/app/shadowrocket/id932747118" target="_blank" rel="noopener noreferrer" > 小火箭(付费,建议) </a>
-			<a href="https://guide.myargo.de5.net/shadowrocket" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
-			<br/> <br/>
-			<a href="https://apps.apple.com/us/app/sing-box-vt/id6673731168" target="_blank" rel="noopener noreferrer" > sing-box app </a> 
-			<br/><br/>
-			<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a> 
-			<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a>
-			<br/><br/>
-			<p><a href="${userUrl}logout">退出</a></p>
-			<script>
-				function copyContent(title , text) {
-					// 创建一个临时的 textarea 元素
-					const tempInput = document.createElement('textarea');
-					tempInput.value = text;  // 设置 textarea 的值为要复制的文本
-					document.body.appendChild(tempInput);  // 将 textarea 元素添加到 body
-					
-					// 选择 textarea 内容并复制
-					tempInput.select();
-					tempInput.setSelectionRange(0, 99999);  // 适用于移动设备
+		<p>windows</p>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#v2rayN" target="_blank" rel="noopener noreferrer" > v2rayN(建议) </a>
+		<a href="https://guide.myargo.de5.net/v2rayN" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
+		<br/><br/>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a>
+		<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a>
+		<p>Mac os</p>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#v2rayN" target="_blank" rel="noopener noreferrer" > v2rayN(建议) </a> 
+		<br/><br/>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/other.html#sb11115m" target="_blank" rel="noopener noreferrer" > sing-box app </a>
+		<br/><br/>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a>
+		<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
+		<p>安卓</p>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#v2rayNG" target="_blank" rel="noopener noreferrer" > v2rayNG(建议) </a> 
+		<a href="https://guide.myargo.de5.net/v2rayNG" target="_blank" rel="noopener noreferrer" > (使用教程) </a>
+		<br/><br/>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/other.html#sb11115a" target="_blank" rel="noopener noreferrer" > sing-box app </a>
+		<br/><br/>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a>
+		<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
+		<p>apple 移动端 app (也支持Mac os)</p>
+		<a href="https://apps.apple.com/us/app/shadowrocket/id932747118" target="_blank" rel="noopener noreferrer" > 小火箭(付费,建议) </a>
+		<a href="https://guide.myargo.de5.net/shadowrocket" target="_blank" rel="noopener noreferrer" > (使用教程) </a> 
+		<br/> <br/>
+		<a href="https://apps.apple.com/us/app/sing-box-vt/id6673731168" target="_blank" rel="noopener noreferrer" > sing-box app </a> 
+		<br/><br/>
+		<a href="https://app.ifxxku.dpdns.org/ZhongApp/releases.html#clashMi" target="_blank" rel="noopener noreferrer" > clash mi </a> 
+		<a href="https://guide.myargo.de5.net/clashMi" target="_blank" rel="noopener noreferrer" > (使用教程) </a>
+		<br/><br/>
+		<p><a href="${userUrl}logout">退出</a></p>
+		<script>
+			function copyContent(title , text) {
+				// 创建一个临时的 textarea 元素
+				const tempInput = document.createElement('textarea');
+				tempInput.value = text;  // 设置 textarea 的值为要复制的文本
+				document.body.appendChild(tempInput);  // 将 textarea 元素添加到 body
+				
+				// 选择 textarea 内容并复制
+				tempInput.select();
+				tempInput.setSelectionRange(0, 99999);  // 适用于移动设备
 
-					// 执行复制操作
-					document.execCommand("copy");
+				// 执行复制操作
+				document.execCommand("copy");
 
-					// 移除临时的 textarea 元素
-					document.body.removeChild(tempInput);
+				// 移除临时的 textarea 元素
+				document.body.removeChild(tempInput);
 
-					
-					alert(title + " 复制成功");
-				}
-		</script>	
-        `;
+				
+				alert(title + " 复制成功");
+			}
+	</script>	
+	`;
 
-			return subUrl(output);
-		};
+		return subUrl(output);
+
 	};
 
 	// 登出逻辑
@@ -583,41 +602,6 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 			},
 		});
 	}
-
-
-	// 登录处理
-	if (url.pathname === userUrl + "home" && request.method === "POST") {
-		const formData = await request.formData();
-		const username = formData.get("username");
-		const password = formData.get("password");
-
-		if (username === USERNAME && password === PASSWORD) {
-			// 登录成功，设置 Cookie
-			return new Response(null, {
-				status: 302,
-				headers: {
-					"Set-Cookie": `${COOKIE_NAME}=${COOKIE_VALUE}; path=${userUrl}home; HttpOnly; Secure; SameSite=Strict`,
-					"Location": userUrl + "home",
-				},
-			});
-		} else {
-			const text = layoutText('logout', `账号或密码错误 <a href='${userUrl}home'>返回</a>`)
-			return new Response(text, {
-				headers: { "Content-Type": "text/html; charset=utf-8" },
-			});
-		}
-	}
-
-	// 未登录，展示登录页面
-	if (url.pathname === userUrl + "home") {
-
-		const text = loginText(userUrl + "home")
-
-		return new Response(
-			text,
-			{ headers: { "Content-Type": "text/html; charset=utf-8" } }
-		);
-	};
 
 	return nginx();
 

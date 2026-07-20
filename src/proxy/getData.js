@@ -20,6 +20,7 @@ export async function getUsersData(env) {
 			const stats = {}
 			let enable = true
 			let addr = subAddr
+			let atuoSelect = false
 			let port = 0
 			let ports
 			let nodes = []
@@ -90,6 +91,10 @@ export async function getUsersData(env) {
 
 			if (SubConfig.all_user?.nodes.length) {
 				nodes = SubConfig.all_user.nodes
+			}
+
+			if (SubConfig.none_atuo_select === "true") {
+				atuoSelect = true
 			}
 
 
@@ -180,6 +185,19 @@ export async function getUsersData(env) {
 					nodes = []
 				}
 
+				if (SubConfig.users[`${user.email}`]?.none_atuo_select === "true" &&
+					 nodes.length
+				) {
+					atuoSelect = true
+				} else if (SubConfig.none_atuo_select === "true" &&
+					!SubConfig.users[`${user.email}`]?.none_atuo_select &&
+					nodes.length
+				){
+					atuoSelect = true
+				} else {
+					atuoSelect = false
+				}
+
 
 				if (obj.protocol === "hysteria") {
 					if (SubConfig.users[`${user.email}`]?.ports) {
@@ -206,6 +224,7 @@ export async function getUsersData(env) {
 				} else {
 					newUsers[`${user.email}`] = {
 						"enable": null,
+						"none_atuo_select": null,
 						"addr": null,
 						"port": null,
 						"security": null,
@@ -221,6 +240,7 @@ export async function getUsersData(env) {
 						"up": up,
 						"down": down,
 						"enable": enable,
+						"atuoSelect": atuoSelect,
 						"addr": addr,
 						"port": port,
 						"sub_url": `/${obj.port}/${user.subId}/${user.email}\.`,
@@ -243,6 +263,7 @@ export async function getUsersData(env) {
 						"up": up,
 						"down": down,
 						"enable": enable,
+						"atuoSelect": atuoSelect,
 						"addr": addr,
 						"port": port,
 						"ports": ports,

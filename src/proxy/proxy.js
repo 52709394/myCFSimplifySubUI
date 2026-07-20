@@ -1,3 +1,4 @@
+import { SubConfig } from '../config.js'
 import { newSingboxJson } from './singbox.js'
 import { clashYaml } from './clash.js'
 import { nginx, responseURL } from '../html.js';
@@ -208,6 +209,18 @@ export async function jsonProxy(node, backup) {
 		`
     }
 
+    function proxyAtuo(tag, proxys, interval) {
+        return `
+        {
+            "type": "urltest",
+            "tag": "${tag}",
+            "outbounds":[${proxys}],
+			"interval": "${interval}",
+            "interrupt_exist_connections": true
+        },
+`
+    }
+
     let groups = ""
     let outbounds = ""
     let proxys = ""
@@ -232,7 +245,14 @@ export async function jsonProxy(node, backup) {
         proxys += `"${n.none}"`
     }
 
-    groups += proxySelect(proxys)
+    if (node.atuoSelect) {
+        groups = proxySelect(`"auto"`)
+        groups += proxyAtuo("auto", proxys, "3m")
+    } else {
+        groups = proxySelect(proxys)
+    }
+
+
 
     return newSingboxJson(groups, outbounds)
 
@@ -338,6 +358,19 @@ export async function yamlProxy(node, backup) {
 	`
     }
 
+    function proxyAtuo(name, proxys, interval) {
+        return `
+  - {
+    name: ${name},
+    type: url-test,
+    proxies:
+      [${proxys}],
+    url: 'https://www.gstatic.com/generate_204',
+    interval: ${interval},
+    }
+	`
+    }
+
     let groups = ""
     let proxies = ""
     let proxys = ""
@@ -362,7 +395,13 @@ export async function yamlProxy(node, backup) {
 
     }
 
-    groups += proxySelect(proxys)
+    if (node.atuoSelect) {
+        groups = proxySelect("auto")
+        groups += proxyAtuo("auto", proxys, "60")
+    } else {
+        groups = proxySelect(proxys)
+    }
+
 
     return clashYaml(proxies, groups)
 
