@@ -3,6 +3,7 @@ import { getUsersData, updateGeofile } from './proxy/getData.js'
 import { generateQRCode } from './qr_code.js';
 import * as proxy from './proxy/proxy.js';
 import { subUrl, nginx, loginText, layoutText } from './html.js';
+import { getIpsStr } from './ip_list.js';
 
 
 export default {
@@ -94,6 +95,11 @@ export default {
 	},
 
 	async scheduled(_, env) {
+		
+		if (SubConfig.node_cf === "true") {
+			await getIpsStr(env)
+		}
+
 		await getUsersData(env)
 		await updateGeofile()
 		//await getIpsStr(env)

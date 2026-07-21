@@ -95,6 +95,22 @@ export async function htmlProxy(node, backup) {
     } else if (node.model == "hysteria") {
         const { html } = await import("./hysteria2");
         proxyFun = html
+    } else if (node.model.startsWith("cf")) {
+        const cf = await import("./cf/html");
+
+        switch (node.model) {
+            case "cf+vmess+ws+tls":
+                proxyFun = cf.vmessWsTls
+                break;
+            case "cf+vless+ws+tls":
+                proxyFun = cf.vlessWSTls
+                break;
+            case "cf+trojan+ws+tls":
+                proxyFun = cf.trojanWSTls
+                break;
+            default:
+                return nginx()
+        }
     } else {
         return nginx()
     }
@@ -106,6 +122,9 @@ export async function htmlProxy(node, backup) {
 
     for (const n of node.nodes) {
         node.addr = n.addr
+        if (node.isCF) {
+            node.port = n.port
+        }
         node.sni = n.sni
         node.none = n.none
         url += proxyFun(node);
@@ -195,6 +214,22 @@ export async function jsonProxy(node, backup) {
         const { json } = await import("./hysteria2");
         proxyFun = json
 
+    } else if (node.model.startsWith("cf")) {
+        const cf = await import("./cf/json");
+
+        switch (node.model) {
+            case "cf+vess+ws+tls":
+                proxyFun = cf.vmessWsTls
+                break;
+            case "cf+vless+ws+tls":
+                proxyFun = cf.vlessWSTls
+                break;
+            case "cf+trojan+ws+tls":
+                proxyFun = cf.trojanWSTls
+                break;
+            default:
+                return nginx()
+        }
     } else {
         return nginx()
     }
@@ -233,6 +268,9 @@ export async function jsonProxy(node, backup) {
     for (const n of node.nodes) {
 
         node.addr = n.addr
+        if (node.isCF) {
+            node.port = n.port
+        }
         node.sni = n.sni
         node.none = n.none
 
@@ -342,6 +380,22 @@ export async function yamlProxy(node, backup) {
         const { yaml } = await import("./hysteria2");
         proxyFun = yaml
 
+    } else if (node.model.startsWith("cf")) {
+        const cf = await import("./cf/yaml");
+
+        switch (node.model) {
+            case "cf+vmess+ws+tls":
+                proxyFun = cf.vmessWsTls
+                break;
+            case "cf+vless+ws+tls":
+                proxyFun = cf.vlessWSTls
+                break;
+            case "cf+trojan+ws+tls":
+                proxyFun = cf.trojanWSTls
+                break;
+            default:
+                return nginx()
+        }
     } else {
         return nginx()
     }
@@ -382,6 +436,9 @@ export async function yamlProxy(node, backup) {
     for (const n of node.nodes) {
 
         node.addr = n.addr
+        if (node.isCF) {
+            node.port = n.port
+        }
         node.sni = n.sni
         node.none = n.none
 

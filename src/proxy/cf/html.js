@@ -1,0 +1,65 @@
+export function vmessWsTls(proxy) {
+
+
+    const addr = proxy.addr
+    const uuid = proxy.uuid
+    const port = proxy.port
+
+    const path = "&path" + encodeURIComponent(proxy.path)
+    let fp = "chrome"
+    const none = encodeURIComponent(proxy.none)
+
+
+    let sni = proxy.sni
+
+    if (proxy.fp) {
+        fp = proxy.fp
+    }
+
+    return `vmess://${uuid}@${addr}:${port}?encryption=auto&security=tls&sni=${sni}&fp=${fp}&insecure=0&host=${sni}&type=ws${path}#${none}\n`
+
+}
+
+export function vlessWSTls(proxy) {
+
+    const addr = proxy.addr
+    const uuid = proxy.uuid
+    const port = proxy.port
+
+    const path = "&path" + encodeURIComponent(proxy.path)
+    let fp = "chrome"
+    const none = encodeURIComponent(proxy.none)
+
+
+    let sni = proxy.sni
+
+    if (proxy.fp) {
+        fp = proxy.fp
+    }
+
+    return `vless://${uuid}@${addr}:${port}?encryption=none&security=tls&sni=${sni}&fp=${fp}&insecure=0&host=${sni}&type=ws${path}#${none}\n`
+
+}
+
+export function trojanWSTls(proxy) {
+
+    const addr = proxy.addr
+    const uuid = proxy.uuid
+    const port = proxy.port
+
+    const path = "&path" + encodeURIComponent(proxy.path)
+    let fp = "chrome"
+    const none = encodeURIComponent(proxy.none)
+
+
+    let sni = proxy.sni
+
+    if (proxy.fp) {
+        fp = proxy.fp
+    }
+
+    return `trojan://${uuid}@${addr}:${port}?security=tls&sni=${sni}&fp=${fp}&insecure=0&host=${sni}&type=ws${path}#${none}\n`
+
+
+
+}
