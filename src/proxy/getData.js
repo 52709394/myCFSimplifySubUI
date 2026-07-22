@@ -1,355 +1,363 @@
 import { SubConfig } from '../config.js';
 import { getIpsStr, heightIps } from "../ip_list.js"
 
-
 export async function getUsersData(env) {
+
+	if (SubConfig.manual_model != "true") {
+		await autoConfig(env)
+	} else {
+		await manualConfig(env)
+	}
+}
+
+async function autoConfig(env) {
 	try {
 
-	const data = await getInbounds(SubConfig.xui_token);
+		const data = await getInbounds(SubConfig.xui_token);
 
-	if (!data.success) {
-		return
-	}
-
-	const usersOdj = { "users": [] }
-
-	const subAddr = getHost(SubConfig.xui_url)
-
-	const newUsers = {}
-
-	let isCF = false
-	let ips = []
-
-	
-	if (SubConfig.node_cf === "true") {
-		let cached = await env.sub_data.get("ipData");
-
-		if (!cached) {
-			await getIpsStr(env)
-			cached = await env.sub_data.get("ipData");
+		if (!data.success) {
+			return
 		}
 
-		if (cached) {
-			ips = heightIps(cached)
-		}
+		const usersOdj = { "users": [] }
 
-		if (ips.length) {
-			isCF = true
-		}
-	}
+		const subAddr = getHost(SubConfig.xui_url)
 
-	
-	
-	for (const obj of data.obj) {
-		const stats = {}
-		let enable = true
-		let addr = subAddr
-		let atuoSelect = false
-		let port = 0
-		let ports
-		let nodes = []
-		let network = obj.streamSettings.network;
-		const settingKey = `${network}Settings`;
-		let path, serviceName
-		let isInsecure = false
-		let security
-		let front = ""
-		let Back = ""
+		const newUsers = {}
+
+		let isCF = false
+		let ips = []
 
 
-		if (SubConfig.backup?.enable === "true") {
-			enable = false
-		}
+		if (SubConfig.node_cf === "true") {
+			let cached = await env.sub_data.get("ipData");
 
-		if (network === "ws" ||
-			network === "httpupgrade" ||
-			network === "xhttp"
-		) {
-			path = obj.streamSettings[settingKey]?.path ?? "";
-		} else if (network === "grpc") {
-			serviceName = obj.streamSettings[settingKey]?.serviceName ?? "";
-		} else if (network === "raw") {
-			network = "tcp"
-		}
-
-		if (SubConfig.all_user?.addr) {
-			addr = SubConfig.all_user.addr
-		}
-
-		if (SubConfig.all_user?.port) {
-			port = SubConfig.all_user.port
-		} else {
-			port = obj.port
-		}
-
-		security = obj.streamSettings.security
-
-		if (security === "none" &&
-			SubConfig.all_user?.security === "tls"
-		) {
-			security = "tls"
-		}
-
-		let sni, pbk, sid
-		let fp
-
-		if (security === "reality") {
-			sni = obj.streamSettings.realitySettings.serverNames[0]
-			pbk = obj.streamSettings.realitySettings.settings.publicKey
-			sid = obj.streamSettings.realitySettings.shortIds[0]
-
-			if (obj.streamSettings.realitySettings.settings.fingerprint) {
-				fp = obj.streamSettings.realitySettings.settings.fingerprint
+			if (!cached) {
+				await getIpsStr(env)
+				cached = await env.sub_data.get("ipData");
 			}
 
-		} else if (security === "tls" &&
-			SubConfig.all_user?.security != "tls"
-		) {
-			if (obj.streamSettings.tlsSettings.serverName != "") {
-				sni = obj.streamSettings.tlsSettings.serverName
+			if (cached) {
+				ips = heightIps(cached)
 			}
-			if (obj.streamSettings.tlsSettings?.settings.fingerprint) {
-				fp = obj.streamSettings.tlsSettings?.settings.fingerprint
-			}
-		}
 
-		if (SubConfig.all_user?.nodes.length) {
-			nodes = SubConfig.all_user.nodes
-		}
-
-		if (SubConfig.none_atuo_select === "true") {
-			atuoSelect = true
-		}
-
-
-		if (obj.protocol === "hysteria") {
-			if (SubConfig.all_user?.ports) {
-				ports = SubConfig.all_user.ports
-			}
-		}
-
-		if (SubConfig.none_front) {
-			front = SubConfig.none_front
-		}
-
-		if (SubConfig.none_back) {
-			Back = SubConfig.none_back
-		}
-
-
-
-		for (const user of obj.clientStats) {
-			stats[`${user.email}`] = {
-				"up": user.up,
-				"down": user.down
+			if (ips.length) {
+				isCF = true
 			}
 		}
 
 
-		for (const user of obj.settings.clients) {
 
-			let proxy
+		for (const obj of data.obj) {
+			const stats = {}
+			let enable = true
+			let addr = subAddr
+			let autoSelect = false
+			let port = 0
+			let ports
+			let nodes = []
+			let network = obj.streamSettings.network;
+			const settingKey = `${network}Settings`;
+			let path, serviceName
+			let isInsecure = false
+			let security
+			let front = ""
+			let Back = ""
 
-			let uuid, password
 
-			let model = ""
+			if (SubConfig.backup?.enable === "true") {
+				enable = false
+			}
 
-			const up = formatBytes(stats[`${user.email}`]?.up)
+			if (network === "ws" ||
+				network === "httpupgrade" ||
+				network === "xhttp"
+			) {
+				path = obj.streamSettings[settingKey]?.path ?? "";
+			} else if (network === "grpc") {
+				serviceName = obj.streamSettings[settingKey]?.serviceName ?? "";
+			} else if (network === "raw") {
+				network = "tcp"
+			}
 
-			const down = formatBytes(stats[`${user.email}`]?.down)
-
-			if (SubConfig.users[`${user.email}`]?.addr) {
-				addr = SubConfig.users[`${user.email}`].addr
-			} else if (SubConfig.all_user?.addr) {
+			if (SubConfig.all_user?.addr) {
 				addr = SubConfig.all_user.addr
 			}
 
-			if (SubConfig.users[`${user.email}`]?.port) {
-				port = SubConfig.users[`${user.email}`].port
-			} else if (SubConfig.all_user?.port) {
+			if (SubConfig.all_user?.port) {
 				port = SubConfig.all_user.port
+			} else {
+				port = obj.port
 			}
 
+			security = obj.streamSettings.security
+
 			if (security === "none" &&
-				SubConfig.users[`${user.email}`]?.security === "tls"
+				SubConfig.all_user?.security === "tls"
 			) {
 				security = "tls"
 			}
 
-			if (obj.protocol === "vmess" ||
-				obj.protocol === "vless" ||
-				obj.protocol === "trojan"
+			let sni, pbk, sid
+			let fp
+
+			if (security === "reality") {
+				sni = obj.streamSettings.realitySettings.serverNames[0]
+				pbk = obj.streamSettings.realitySettings.settings.publicKey
+				sid = obj.streamSettings.realitySettings.shortIds[0]
+
+				if (obj.streamSettings.realitySettings.settings.fingerprint) {
+					fp = obj.streamSettings.realitySettings.settings.fingerprint
+				}
+
+			} else if (security === "tls" &&
+				SubConfig.all_user?.security != "tls"
 			) {
-				model = `${obj.protocol}\+${network}\+${security}`
-			} else {
-				model = obj.protocol
+				if (obj.streamSettings.tlsSettings.serverName != "") {
+					sni = obj.streamSettings.tlsSettings.serverName
+				}
+				if (obj.streamSettings.tlsSettings?.settings.fingerprint) {
+					fp = obj.streamSettings.tlsSettings?.settings.fingerprint
+				}
 			}
 
-
-			if (obj.protocol === "vmess" ||
-				obj.protocol === "vless"
-			) {
-				uuid = user.id
-			} else {
-				password = user.password
-			}
-
-
-			if (SubConfig.users[`${user.email}`]?.enable === "false" ||
-				SubConfig.backup?.enable === "true") {
-				enable = false
-			}
-
-
-			if (SubConfig.users[`${user.email}`]?.nodes.length) {
-				nodes = SubConfig.users[`${user.email}`].nodes
-			} else if (SubConfig.all_user?.nodes) {
+			if (SubConfig.all_user?.nodes.length) {
 				nodes = SubConfig.all_user.nodes
-			} else {
-				nodes = []
 			}
 
-			if (SubConfig.users[`${user.email}`]?.none_atuo_select === "true" &&
-				nodes.length
-			) {
-				atuoSelect = true
-			} else if (SubConfig.none_atuo_select === "true" &&
-				!SubConfig.users[`${user.email}`]?.none_atuo_select &&
-				nodes.length
-			) {
-				atuoSelect = true
-			} else {
-				atuoSelect = false
+			if (SubConfig.none_atuo_select === "true") {
+				autoSelect = true
 			}
 
 
 			if (obj.protocol === "hysteria") {
-				if (SubConfig.users[`${user.email}`]?.ports) {
-					ports = SubConfig.users[`${user.email}`].ports
-				} else if (SubConfig.all_user?.ports) {
+				if (SubConfig.all_user?.ports) {
 					ports = SubConfig.all_user.ports
 				}
 			}
 
-			if (SubConfig.users[`${user.email}`]?.none_front) {
-				front = SubConfig.users[`${user.email}`].none_front
-			} else if (SubConfig.all_user?.front) {
-				front = SubConfig.all_user.front
+			if (SubConfig.none_front) {
+				front = SubConfig.none_front
 			}
 
-			if (SubConfig.users[`${user.email}`]?.none_back) {
-				front = SubConfig.users[`${user.email}`].none_back;
-			} else if (SubConfig.all_user?.none_back) {
-				front = SubConfig.all_user.backup;
+			if (SubConfig.none_back) {
+				Back = SubConfig.none_back
 			}
 
-			if (SubConfig.users[`${user.email}`]) {
-				newUsers[`${user.email}`] = SubConfig.users[`${user.email}`]
-			} else {
-				newUsers[`${user.email}`] = {
-					"enable": null,
-					"none_atuo_select": null,
-					"addr": null,
-					"port": null,
-					"security": null,
-					"sni": null,
-					"nodes": []
+
+
+			for (const user of obj.clientStats) {
+				stats[`${user.email}`] = {
+					"up": user.up,
+					"down": user.down
 				}
 			}
 
-			if (security === "reality") {
 
-				proxy = {
-					"name": user.email,
-					"up": up,
-					"down": down,
-					"enable": enable,
-					"atuoSelect": atuoSelect,
-					"addr": addr,
-					"port": port,
-					"sub_url": `/${obj.port}/${user.subId}/${user.email}\.`,
-					"model": model,
-					"uuid": uuid,
-					"password": password,
-					"path": path,
-					"serviceName": serviceName,
-					"sni": sni,
-					"pbk": pbk,
-					"sid": sid,
-					"fp": fp,
-					"none": `${front}${user.email}${Back}`,
-					"nodes": nodes
+			for (const user of obj.settings.clients) {
+
+				let proxy
+
+				let uuid, password
+
+				let model = ""
+
+				const up = formatBytes(stats[`${user.email}`]?.up)
+
+				const down = formatBytes(stats[`${user.email}`]?.down)
+
+				if (SubConfig.users_obj[`${user.email}`]?.addr) {
+					addr = SubConfig.users_obj[`${user.email}`].addr
+				} else if (SubConfig.all_user?.addr) {
+					addr = SubConfig.all_user.addr
 				}
 
-			} else {
+				if (SubConfig.users_obj[`${user.email}`]?.port) {
+					port = SubConfig.users_obj[`${user.email}`].port
+				} else if (SubConfig.all_user?.port) {
+					port = SubConfig.all_user.port
+				}
 
-				let l = ""
-
-				if (isCF &&
-					SubConfig.users[`${user.email}`]?.node_cf === "true"
+				if (security === "none" &&
+					SubConfig.users_obj[`${user.email}`]?.security === "tls"
 				) {
-					l = "-0"
-					atuoSelect = true
-					addr = ips[0].addr
-					port = ips[0].port
-					model = "cf+" + model
+					security = "tls"
+				}
+
+				if (obj.protocol === "vmess" ||
+					obj.protocol === "vless" ||
+					obj.protocol === "trojan"
+				) {
+					model = `${obj.protocol}\+${network}\+${security}`
+				} else {
+					model = obj.protocol
+				}
+
+
+				if (obj.protocol === "vmess" ||
+					obj.protocol === "vless"
+				) {
+					uuid = user.id
+				} else {
+					password = user.password
+				}
+
+
+				if (SubConfig.users_obj[`${user.email}`]?.enable === "false" ||
+					SubConfig.backup?.enable === "true") {
+					enable = false
+				}
+
+
+				if (SubConfig.users_obj[`${user.email}`]?.nodes.length) {
+					nodes = SubConfig.users_obj[`${user.email}`].nodes
+				} else if (SubConfig.all_user?.nodes) {
+					nodes = SubConfig.all_user.nodes
+				} else {
 					nodes = []
-					if (ips.length > 1) {
-						for (let i = 1; i < ips.length; i++) {
-							nodes.push({
-								"addr": ips[i].addr,
-								"port": ips[i].port,
-								"sni": sni,
-								"none": `${front}${user.email}${Back}-${i}`
-							})
-						}
+				}
+
+				if (SubConfig.users_obj[`${user.email}`]?.none_atuo_select === "true" &&
+					nodes.length
+				) {
+					autoSelect = true
+				} else if (SubConfig.none_atuo_select === "true" &&
+					!SubConfig.users_obj[`${user.email}`]?.none_atuo_select &&
+					nodes.length
+				) {
+					autoSelect = true
+				} else {
+					autoSelect = false
+				}
+
+
+				if (obj.protocol === "hysteria") {
+					if (SubConfig.users_obj[`${user.email}`]?.ports) {
+						ports = SubConfig.users_obj[`${user.email}`].ports
+					} else if (SubConfig.all_user?.ports) {
+						ports = SubConfig.all_user.ports
 					}
 				}
 
-				proxy = {
-					"name": user.email,
-					"up": up,
-					"down": down,
-					"enable": enable,
-					"atuoSelect": atuoSelect,
-					"isCF": isCF,
-					"addr": addr,
-					"port": port,
-					"ports": ports,
-					"sub_url": `/${obj.port}/${user.subId}/${user.email}\.`,
-					"model": model,
-					"uuid": uuid,
-					"password": password,
-					"path": path,
-					"serviceName": serviceName,
-					"sni": sni,
-					"isInsecure": isInsecure,
-					"fp": fp,
-					"none": `${front}${user.email}${Back}${l}`,
-					"nodes": nodes
+				if (SubConfig.users_obj[`${user.email}`]?.none_front) {
+					front = SubConfig.users_obj[`${user.email}`].none_front
+				} else if (SubConfig.all_user?.front) {
+					front = SubConfig.all_user.front
 				}
+
+				if (SubConfig.users_obj[`${user.email}`]?.none_back) {
+					front = SubConfig.users_obj[`${user.email}`].none_back;
+				} else if (SubConfig.all_user?.none_back) {
+					front = SubConfig.all_user.backup;
+				}
+
+				if (SubConfig.users_obj[`${user.email}`]) {
+					newUsers[`${user.email}`] = SubConfig.users_obj[`${user.email}`]
+				} else {
+					newUsers[`${user.email}`] = {
+						"enable": null,
+						"none_atuo_select": null,
+						"addr": null,
+						"port": null,
+						"security": null,
+						"sni": null,
+						"nodes": []
+					}
+				}
+
+				if (security === "reality") {
+
+					proxy = {
+						"name": user.email,
+						"up": up,
+						"down": down,
+						"enable": enable,
+						"autoSelect": autoSelect,
+						"addr": addr,
+						"port": port,
+						"sub_url": `/${obj.port}/${user.subId}/${user.email}\.`,
+						"model": model,
+						"uuid": uuid,
+						"password": password,
+						"path": path,
+						"serviceName": serviceName,
+						"sni": sni,
+						"pbk": pbk,
+						"sid": sid,
+						"fp": fp,
+						"none": `${front}${user.email}${Back}`,
+						"nodes": nodes
+					}
+
+				} else {
+
+					let l = ""
+
+					if (isCF &&
+						SubConfig.users_obj[`${user.email}`]?.node_cf === "true"
+					) {
+						l = "-0"
+						autoSelect = true
+						addr = ips[0].addr
+						port = ips[0].port
+						model = "cf+" + model
+						nodes = []
+						if (ips.length > 1) {
+							for (let i = 1; i < ips.length; i++) {
+								nodes.push({
+									"addr": ips[i].addr,
+									"port": ips[i].port,
+									"sni": sni,
+									"none": `${front}${user.email}${Back}-${i}`
+								})
+							}
+						}
+					}
+
+					proxy = {
+						"name": user.email,
+						"up": up,
+						"down": down,
+						"enable": enable,
+						"autoSelect": autoSelect,
+						"isCF": isCF,
+						"addr": addr,
+						"port": port,
+						"ports": ports,
+						"sub_url": `/${obj.port}/${user.subId}/${user.email}\.`,
+						"model": model,
+						"uuid": uuid,
+						"password": password,
+						"path": path,
+						"serviceName": serviceName,
+						"sni": sni,
+						"isInsecure": isInsecure,
+						"fp": fp,
+						"none": `${front}${user.email}${Back}${l}`,
+						"nodes": nodes
+					}
+				}
+				usersOdj.users.push(proxy)
 			}
-			usersOdj.users.push(proxy)
 		}
+
+
+
+		SubConfig.users_obj = newUsers
+
+		const configStr = JSON.stringify(SubConfig)
+		const usersStr = JSON.stringify(usersOdj)
+
+		//console.log(usersStr);
+
+		await env.sub_data.put("subCofig", configStr)
+		await env.sub_data.put("usersData", usersStr)
+
+	} catch (e) {
+		return new Response(e.message, {
+			status: 500
+		});
 	}
-
-
-
-	SubConfig.users = newUsers
-
-	const configStr = JSON.stringify(SubConfig)
-	const usersStr = JSON.stringify(usersOdj)
-
-	//console.log(usersStr);
-
-	await env.sub_data.put("subCofig", configStr)
-	await env.sub_data.put("usersData", usersStr)
-
-		} catch (e) {
-			return new Response(e.message, {
-				status: 500
-			});
-		}
 }
 
 
@@ -408,6 +416,130 @@ function getHost(str) {
 	}
 }
 
+async function manualConfig(env) {
+
+	const usersOdj = { "users": [] }
+
+	let isCF = false
+	let ips = []
+
+
+	if (SubConfig.node_cf === "true") {
+		let cached = await env.sub_data.get("ipData");
+
+		if (!cached) {
+			await getIpsStr(env)
+			cached = await env.sub_data.get("ipData");
+		}
+
+		if (cached) {
+			ips = heightIps(cached)
+		}
+
+		if (ips.length) {
+			isCF = true
+		}
+	}
+
+
+	for (const user of SubConfig.users_arr) {
+
+		const name = user.name
+		let enable = true
+		const sub_url = user.sub_url
+		const model = user.model
+		let autoSelect = false
+		let isCF = false
+		let addr = user.addr
+		let port = user.port
+		const ports = user.ports
+		const uuid = user.uuid
+		const password = user.password
+		const path = user.path
+		const serviceName = user.serverName
+		const sni = user.sni
+		const fp = user.fp
+		let isInsecure = false
+		const pbk = user.pbk
+		const sid = user.sid
+		const none = user.none
+		let nodes = user.nodes
+
+
+
+		if (user.enable === "false") {
+			enable = false
+		}
+
+		if (user.autoSelect === "true") {
+			autoSelect = true
+		}
+
+		if  ( SubConfig.node_cf == "true" && user.node_cf === "true"  ) {
+			isCF = true
+		}
+
+		if (user.isInsecure === "true") {
+			isInsecure = true
+		}
+
+		if (user.isInsecure === "true") {
+			isInsecure = true
+		}
+
+
+		let l = ""
+
+		if (isCF) {
+			l = "-0"
+			autoSelect = true
+			addr = ips[0].addr
+			port = ips[0].port
+			nodes = []
+			if (ips.length > 1) {
+				for (let i = 1; i < ips.length; i++) {
+					nodes.push({
+						"addr": ips[i].addr,
+						"port": ips[i].port,
+						"sni": sni,
+						"none": `${front}${user.email}${Back}-${i}`
+					})
+				}
+			}
+		}
+
+
+		usersOdj.users.push({
+			"name": name,
+			"enable": enable,
+			"sub_url": sub_url,
+			"autoSelect": autoSelect,
+			"isCF": isCF,
+			"addr": addr,
+			"port": port,
+			"ports": ports,
+			"model": model,
+			"uuid": uuid,
+			"password": password,
+			"path": path,
+			"serviceName": serviceName,
+			"sni": sni,
+			"pbk": pbk,
+			"sid": sid,
+			"isInsecure": isInsecure,
+			"fp": fp,
+			"none": `${none}${l}`,
+			"nodes": nodes
+		});
+
+	}
+
+	const usersStr = JSON.stringify(usersOdj)
+	await env.sub_data.put("usersData", usersStr)
+
+
+}
+
 function formatBytes(bytes, decimals = 2) {
 	if (!bytes) return "0 B";
 
@@ -416,3 +548,5 @@ function formatBytes(bytes, decimals = 2) {
 
 	return (bytes / Math.pow(1024, i)).toFixed(decimals) + " " + units[i];
 }
+
+

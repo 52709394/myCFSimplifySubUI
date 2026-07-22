@@ -160,6 +160,7 @@ export function originConfig() {
             "cookie_value": "52709394",
             "xui_url": null,
             "xui_token": null,
+            "manual_model":null,
             "node_cf": null,
             "cf_ips_url": null,
             "none_atuo_select": null,
@@ -178,7 +179,7 @@ export function originConfig() {
                 "json": null,
                 "yaml": null
             },
-            "users": {
+            "users_obj": {
                 "test-user": {
                     "enable": null,
                     "node_cf": null,
@@ -194,7 +195,37 @@ export function originConfig() {
                         }
                     ]
                 }
-            }
+            },
+            "users_arr": [
+                 {
+                "name": null,
+                "enable": null,
+                "sub_url": null,
+                "autoSelect": null,
+                "node_cf": null,
+                "addr": null,
+                "port": null,
+                "ports": null,
+                "model": null,
+                "uuid": null,
+                "password": null,
+                "path": null,
+                "serviceName": null,
+                "sni": null,
+                "pbk": null,
+                "sid": null,
+                "isInsecure": null,
+                "fp": null,
+                "none": null,
+                    "nodes": [
+                        {
+                            "addr": null,
+                            "sni": null,
+                            "none": null
+                        }
+                    ]
+                }
+            ]   
         }
     `
 }

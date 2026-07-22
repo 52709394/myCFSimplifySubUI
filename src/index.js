@@ -95,14 +95,17 @@ export default {
 	},
 
 	async scheduled(_, env) {
-		
-		if (SubConfig.node_cf === "true") {
-			await getIpsStr(env)
-		}
 
-		await getUsersData(env)
-		await updateGeofile()
-		//await getIpsStr(env)
+		if (SubConfig.manual_model != "true") {
+
+			if (SubConfig.node_cf === "true") {
+				await getIpsStr(env)
+			}
+
+			await getUsersData(env)
+			await updateGeofile()
+			//await getIpsStr(env)
+		}
 	}
 };
 
@@ -228,15 +231,6 @@ async function userSubUrl(request, env) {
 	}
 
 	if (url.pathname === SubConfig.sub_url + "/renew") {
-
-
-		const cookie = request.headers.get("Cookie") || "";
-		if (!cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
-			return new Response(
-				"JSON错误: " + e.message,
-				{ status: 400 }
-			);
-		}
 
 		let text = await request.text();
 

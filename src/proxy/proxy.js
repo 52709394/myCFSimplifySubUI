@@ -1,4 +1,3 @@
-import { SubConfig } from '../config.js'
 import { newSingboxJson } from './singbox.js'
 import { clashYaml } from './clash.js'
 import { nginx, responseURL } from '../html.js';
@@ -92,8 +91,11 @@ export async function htmlProxy(node, backup) {
                 return nginx()
         }
 
-    } else if (node.model == "hysteria") {
+    } else if (node.model === "hysteria") {
         const { html } = await import("./hysteria2");
+        proxyFun = html
+    } else if (node.model === "anytls") {
+        const { html } = await import("./anytls.js");
         proxyFun = html
     } else if (node.model.startsWith("cf")) {
         const cf = await import("./cf/html");
@@ -213,7 +215,9 @@ export async function jsonProxy(node, backup) {
     } else if (node.model == "hysteria") {
         const { json } = await import("./hysteria2");
         proxyFun = json
-
+    } else if (node.model === "anytls") {
+        const { json } = await import("./anytls.js");
+        proxyFun = json
     } else if (node.model.startsWith("cf")) {
         const cf = await import("./cf/json");
 
@@ -376,8 +380,11 @@ export async function yamlProxy(node, backup) {
                 return nginx()
         }
 
-    } else if (node.model == "hysteria") {
+    } else if (node.model === "hysteria") {
         const { yaml } = await import("./hysteria2");
+        proxyFun = yaml
+    } else if (node.model === "anytls") {
+        const { yaml } = await import("./anytls.js");
         proxyFun = yaml
 
     } else if (node.model.startsWith("cf")) {
