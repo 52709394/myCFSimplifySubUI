@@ -18,6 +18,26 @@ export default {
 			return WeChatWeb()
 		}
 
+		if (!env.sub_data) {
+			return new Response(
+				`
+			  KV (变量名称:sub_data) 未配置！
+	  
+			  请配置：
+			  1. 创建 KV 命名为sub_data
+			  2. 然后绑定到项目
+			  3. 重新部署
+			  `,
+				{
+					status: 500,
+					headers: {
+						"Content-Type": "text/plain;charset=UTF-8"
+					}
+				}
+			);
+		}
+
+
 		await getSubConfig(env)
 
 		//console.log(JSON.stringify(SubConfig));
@@ -25,10 +45,10 @@ export default {
 
 		const url = new URL(request.url);
 
-		if (url.pathname.includes(SubConfig.sub_url)) {
+		if (url.pathname.includes(SubConfig.web_url)) {
 
-			if (url.pathname === SubConfig.sub_url) {
-				url.pathname = SubConfig.sub_url + '/home.html'
+			if (url.pathname === SubConfig.web_url) {
+				url.pathname = SubConfig.web_url + '/home.html'
 				return Response.redirect(url.toString(), 301)
 			}
 
@@ -124,7 +144,7 @@ async function userSubUrl(request, env) {
 	if (!cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
 
 		// 登录处理
-		if (url.pathname === SubConfig.sub_url + "/login" && request.method === "POST") {
+		if (url.pathname === SubConfig.web_url + "/login" && request.method === "POST") {
 			const formData = await request.formData();
 			const username = formData.get("username");
 			const password = formData.get("password");
@@ -134,12 +154,12 @@ async function userSubUrl(request, env) {
 				return new Response(null, {
 					status: 302,
 					headers: {
-						"Set-Cookie": `${COOKIE_NAME}=${COOKIE_VALUE}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
-						"Location": SubConfig.sub_url + "",
+						"Set-Cookie": `${COOKIE_NAME}=${COOKIE_VALUE}; path=${SubConfig.web_url}; HttpOnly; Secure; SameSite=Strict`,
+						"Location": SubConfig.web_url + "",
 					},
 				});
 			} else {
-				const text = layoutText('logout', `账号或密码错误 <a href='${SubConfig.sub_url}/login'>返回</a>`)
+				const text = layoutText('logout', `账号或密码错误 <a href='${SubConfig.web_url}/login'>返回</a>`)
 				return new Response(text, {
 					headers: { "Content-Type": "text/html; charset=utf-8" },
 				});
@@ -147,12 +167,12 @@ async function userSubUrl(request, env) {
 		}
 
 		// 未登录，展示登录页面
-		if (url.pathname === SubConfig.sub_url + "/login" ||
-			url.pathname === SubConfig.sub_url + "/home.html" ||
-			url.pathname === SubConfig.sub_url + "/set.html"
+		if (url.pathname === SubConfig.web_url + "/login" ||
+			url.pathname === SubConfig.web_url + "/home.html" ||
+			url.pathname === SubConfig.web_url + "/set.html"
 		) {
 
-			const text = loginText(SubConfig.sub_url + "/login")
+			const text = loginText(SubConfig.web_url + "/login")
 
 			return new Response(
 				text,
@@ -164,43 +184,43 @@ async function userSubUrl(request, env) {
 
 	};
 
-	if (url.pathname === SubConfig.sub_url + "/home.html") {
+	if (url.pathname === SubConfig.web_url + "/home.html") {
 
 		let output = await userSubHome(url, env)
 		return subUrl(output);
 	};
 
 
-	if (url.pathname === SubConfig.sub_url + "/set.html") {
+	if (url.pathname === SubConfig.web_url + "/set.html") {
 
 		const output = await userSubSet(url, env)
 
 		return subUrl(output);
 	};
 
-	if (url.pathname === SubConfig.sub_url + "/update" ||
-		url.pathname === SubConfig.sub_url + "/init" ||
-		url.pathname === SubConfig.sub_url + "/renew2") {
+	if (url.pathname === SubConfig.web_url + "/update" ||
+		url.pathname === SubConfig.web_url + "/init" ||
+		url.pathname === SubConfig.web_url + "/renew2") {
 
 		let _url = ""
 		let str = ""
 
-		if (url.pathname === SubConfig.sub_url + "/update") {
-			_url = SubConfig.sub_url + "/home.html"
+		if (url.pathname === SubConfig.web_url + "/update") {
+			_url = SubConfig.web_url + "/home.html"
 			str = "用户数据更新成功"
-		} else if (url.pathname === SubConfig.sub_url + "/init") {
+		} else if (url.pathname === SubConfig.web_url + "/init") {
 			initConfig()
 			await env.sub_data.put(
 				"subCofig",
 				originConfig()
 			);
 
-			_url = SubConfig.sub_url + "/set.html"
+			_url = SubConfig.web_url + "/set.html"
 
 
 			str = "配置初始化成功"
 		} else {
-			_url = SubConfig.sub_url + "/set.html"
+			_url = SubConfig.web_url + "/set.html"
 			str = "配置更新成功"
 		}
 
@@ -223,14 +243,14 @@ async function userSubUrl(request, env) {
 			`, {
 			headers: {
 				"content-type": "text/html; charset=UTF-8",
-				"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
-				"Location": SubConfig.sub_url + "",
+				"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.web_url}; HttpOnly; Secure; SameSite=Strict`,
+				"Location": SubConfig.web_url + "",
 			}
 		});
 
 	}
 
-	if (url.pathname === SubConfig.sub_url + "/renew") {
+	if (url.pathname === SubConfig.web_url + "/renew") {
 
 		let text = await request.text();
 
@@ -239,26 +259,22 @@ async function userSubUrl(request, env) {
 			// 检查 JSON
 			let obj = JSON.parse(text);
 
-
+			renewConfig(obj)
 			// 转字符串保存
-			let jsonString = JSON.stringify(obj);
-
+			let jsonString = JSON.stringify(SubConfig);
 
 			await env.sub_data.put(
 				"subCofig",
 				jsonString
 			);
 
-
-			renewConfig(obj)
 			await getUsersData(env)
 
-
 			return new Response(
-				`${url.origin}${SubConfig.sub_url}/renew2`, {
+				`${url.origin}${SubConfig.web_url}/renew2`, {
 				headers: {
-					"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.sub_url}; HttpOnly; Secure; SameSite=Strict`,
-					"Location": SubConfig.sub_url + "",
+					"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.web_url}; HttpOnly; Secure; SameSite=Strict`,
+					"Location": SubConfig.web_url + "",
 				}
 			});
 
@@ -275,12 +291,12 @@ async function userSubUrl(request, env) {
 	}
 
 	// 登出逻辑
-	if (url.pathname === SubConfig.sub_url + "/logout") {
+	if (url.pathname === SubConfig.web_url + "/logout") {
 		return new Response(null, {
 			status: 302,
 			headers: {
-				"Set-Cookie": `${COOKIE_NAME}=deleted; path=${SubConfig.sub_url}; expires=Thu, 01 Jan 1970 00:00:00 GMT`,
-				"Location": SubConfig.sub_url + "",
+				"Set-Cookie": `${COOKIE_NAME}=deleted; path=${SubConfig.web_url}; expires=Thu, 01 Jan 1970 00:00:00 GMT`,
+				"Location": SubConfig.web_url + "",
 			},
 		});
 	}
@@ -317,8 +333,8 @@ async function userSubHome(url, env) {
 		<nav class="tutorial-nav">
 			<div class="nav-container">
 				<ul>
-					<li><a href="${SubConfig.sub_url}/home.html" class="active">主页</a></li>
-					<li><a href="${SubConfig.sub_url}/set.html">设置</a></li>
+					<li><a href="${SubConfig.web_url}/home.html" class="active">主页</a></li>
+					<li><a href="${SubConfig.web_url}/set.html">设置</a></li>
 				</ul>
 			</div>
 		</nav>	
@@ -326,7 +342,7 @@ async function userSubHome(url, env) {
 		<!-- 返回顶部按钮 -->
         <button id="back-to-top" title="返回顶部">↑</button>
 
-		<p><a href="${SubConfig.sub_url}/update">更新数据</a></p><br/>
+		<p><a href="${SubConfig.web_url}/update">更新数据</a></p><br/>
 	`;
 
 	for (const user of users.users) {
@@ -360,7 +376,7 @@ async function userSubHome(url, env) {
 			   `;
 	};
 
-	output += `<p><a href="${SubConfig.sub_url}/logout">退出</a></p>`;
+	output += `<p><a href="${SubConfig.web_url}/logout">退出</a></p>`;
 
 	output += `
 			<script>
