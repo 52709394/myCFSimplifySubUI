@@ -461,9 +461,9 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 
 	const url = new URL(request.url);
 	const USERNAME = name;
-	const PASSWORD = "112";
-	const COOKIE_NAME = "userSub";
-	const COOKIE_VALUE = "DaiBaojian";
+	const PASSWORD = "52709394";
+	const COOKIE_NAME = "52709394";
+	const COOKIE_VALUE = "52709394";
 
 	const cookie = request.headers.get("Cookie") || "";
 	// 检查是否已登录（cookie 中是否有 token）
@@ -504,7 +504,6 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 			);
 		};
 
-		console.log(555);
 
 		return nginx();
 
