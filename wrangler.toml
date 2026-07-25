@@ -1,4 +1,4 @@
-name = "3x-ui-sub"
+name = "my-cf-simplify-sub-ui"
 main = "src/index.js"
 compatibility_flags = [ "nodejs_compat" ]
 compatibility_date = "2024-09-23"
@@ -8,11 +8,11 @@ compatibility_date = "2024-09-23"
 
 [[env.dev.kv_namespaces]]
 binding = "sub_data"
-id = "12345678"
+id = "52709394"
 
 #[[kv_namespaces]]
 #binding = "sub_data"
-#id = "a591ef9134944b4f851502278da15ec9" 
+#id = "52709394" 
 
 [triggers]
 crons = ["0 19 * * *"]

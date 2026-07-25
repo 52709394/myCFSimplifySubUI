@@ -118,8 +118,6 @@ export default {
 
 		if (SubConfig.manual_model != "true") {
 
-
-
 			await getUsersData(env)
 			await updateGeofile()
 			//await getIpsStr(env)

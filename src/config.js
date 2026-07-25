@@ -196,8 +196,19 @@ export function renewConfig(obj) {
         for (let key in obj.users_obj) {
             if (Object.prototype.hasOwnProperty.call(obj.users_obj, key)) {
                 const value = obj.users_obj[key];
+
                 if (typeof value === 'object' && value != null) {
                     isObj = true
+                    const nodes = []
+                    if (Array.isArray(obj.users_obj[`${key}`].nodes)) {
+                        for (const n of obj.users_obj[`${key}`].nodes) {
+                            nodes.push({
+                                "addr": n.addr,
+                                "sni": n.sni,
+                                "none": n.none
+                            })
+                        }
+                    }
                     users_obj[`${key}`] = {
                         "enable": obj.users_obj[`${key}`].enable,
                         "node_cf": obj.users_obj[`${key}`].node_cf,
@@ -206,7 +217,7 @@ export function renewConfig(obj) {
                         "port": obj.users_obj[`${key}`].port,
                         "ports": obj.users_obj[`${key}`].ports,
                         "security": obj.users_obj[`${key}`].security,
-                        "nodes": obj.users_obj[`${key}`].nodes
+                        "nodes": nodes
                     }
 
                 }
@@ -273,6 +284,17 @@ export function renewConfig(obj) {
                         `(可选值:\n ${modelList.join(`\n `)})`;
                 }
 
+                const nodes = []
+                if (Array.isArray(user.nodes)) {
+                    for (const n of user.nodes) {
+                        nodes.push({
+                            "addr": n.addr,
+                            "sni": n.sni,
+                            "none": n.none
+                        })
+                    }
+                }
+
                 users_arr.push({
                     "name": user.name,
                     "enable": user.enable,
@@ -308,6 +330,16 @@ export function renewConfig(obj) {
         }
     }
 
+    const nodes = []
+    if (Array.isArray(obj.all_user?.nodes)) {
+        for (const n of obj.all_user.nodes) {
+            nodes.push({
+                "addr": n.addr,
+                "sni": n.sni,
+                "none": n.none
+            })
+        }
+    }
 
     const newObj = {
         "web_url": obj.web_url,
@@ -329,7 +361,7 @@ export function renewConfig(obj) {
             "ports": obj.all_user?.ports,
             "sni": obj.all_user?.sni,
             "security": obj.all_user?.security,
-            "nodes": obj.all_user?.nodes
+            "nodes": nodes
         },
         "backup": {
             "enable": obj.backup.enable,

@@ -1,6 +1,6 @@
 {
-  "name": "3x-ui--sub",
-  "version": "1.0.0",
+  "name": "my-cf-simplify-sub-ui",
+  "version": "52709394",
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev --env dev",
