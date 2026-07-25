@@ -297,6 +297,7 @@ async function autoConfig(env) {
 					let l = ""
 
 					if (isCF &&
+						model.endsWith("ws+tls") &&
 						SubConfig.users_obj[`${user.email}`]?.node_cf === "true"
 					) {
 						l = "-0"
@@ -494,7 +495,10 @@ async function manualConfig(env) {
 
 		let l = ""
 
-		if (isCF) {
+		if (isCF &&
+			model.endsWith("ws+tls") &&
+			user.node_cf === "true"
+		) {
 			l = "-0"
 			autoSelect = true
 			model = "cf+" + model

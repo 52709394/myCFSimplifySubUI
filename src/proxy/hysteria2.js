@@ -79,7 +79,7 @@ export function yaml(proxy) {
     let sniStr = ""
 
     if (proxy.sni) {
-        sniStr = `servername: ${proxy.sni}`
+        sniStr = `sni: ${proxy.sni}`
     }
 
     if (proxy.ports) {

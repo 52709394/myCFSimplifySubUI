@@ -4,7 +4,7 @@ export function tcpTls(proxy) {
   let fp = "chrome"
 
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {
@@ -33,7 +33,7 @@ export function wsTls(proxy) {
   let fp = "chrome"
 
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {
@@ -63,7 +63,7 @@ export function grpcTls(proxy) {
   let fp = "chrome"
 
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {
@@ -81,7 +81,7 @@ export function grpcTls(proxy) {
       grpc-service-name: ${proxy.serviceName}
     tls: true
     udp: true
-    servername: ${proxy.sni}
+    ${sniStr}
     client-fingerprint: ${fp} 
 `
 }
@@ -92,7 +92,7 @@ export function xhttpTls(proxy) {
   let fp = "chrome"
 
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {
@@ -135,7 +135,7 @@ export function tcpReality(proxy) {
     tls: true
     udp: true
     flow: xtls-rprx-vision
-    servername: ${proxy.sni}
+    sni: ${proxy.sni}
     reality-opts:
       public-key: ${proxy.pbk}
       short-id: ${proxy.sid}
@@ -162,7 +162,7 @@ export function xhttpReality(proxy) {
       path: ${proxy.path}  
     tls: true
     udp: true
-    servername: ${proxy.sni}
+    sni: ${proxy.sni}
     reality-opts:
       public-key: ${proxy.pbk}
       short-id: ${proxy.sid}
@@ -190,7 +190,7 @@ export function grpcReality(proxy) {
       grpc-service-name: ${proxy.serviceName}
     tls: true
     udp: true
-    servername: ${proxy.sni}
+    sni: ${proxy.sni}
     reality-opts:
       public-key: ${proxy.pbk}
       short-id: ${proxy.sid}

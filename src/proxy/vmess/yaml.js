@@ -39,7 +39,7 @@ export function tcpTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {
@@ -69,7 +69,7 @@ export function wsTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {
@@ -101,7 +101,7 @@ export function grpcTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {
@@ -133,7 +133,7 @@ export function xhttpTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
   if (proxy.sni) {
-    sniStr = `servername: ${proxy.sni}`
+    sniStr = `sni: ${proxy.sni}`
   }
 
   if (proxy.fp) {

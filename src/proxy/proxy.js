@@ -310,7 +310,7 @@ export async function jsonProxy(node, backup) {
 
 
 
-    if (node.atuoSelect) {
+    if (node.autoSelect) {
         groups = proxySelect(`"auto"`)
         groups += proxyAtuo("auto", proxys, "3m")
     } else {
@@ -486,7 +486,7 @@ export async function yamlProxy(node, backup) {
 
     }
 
-    if (node.atuoSelect) {
+    if (node.autoSelect) {
         groups = proxySelect("auto")
         groups += proxyAtuo("auto", proxys, "60")
     } else {
