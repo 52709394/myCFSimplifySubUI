@@ -27,7 +27,7 @@ export function wsTls(proxy) {
 
     let sni = ""
     let allowInsecure = ""
-    const path = "&path" + encodeURIComponent(proxy.path)
+    const path = encodeURIComponent(proxy.path)
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
@@ -44,7 +44,7 @@ export function wsTls(proxy) {
     }
 
 
-    return `trojan://${password}@${addr}:${port}?security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=ws${path}#${none}\n`
+    return `trojan://${password}@${addr}:${port}?security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=ws&path=${path}#${none}\n`
 }
 
 export function httpupgradeTls(proxy) {
@@ -54,7 +54,7 @@ export function httpupgradeTls(proxy) {
 
     let sni = ""
     let allowInsecure = ""
-    const path = "&path" + encodeURIComponent(proxy.path)
+    const path = encodeURIComponent(proxy.path)
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
@@ -71,7 +71,7 @@ export function httpupgradeTls(proxy) {
         fp = proxy.fp
     }
 
-    return `trojan://${password}@${addr}:${port}?security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=httpupgrade${path}#${none}\n`
+    return `trojan://${password}@${addr}:${port}?security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=httpupgrade&path=${path}#${none}\n`
 }
 
 export function xhttpTls(proxy) {
@@ -81,7 +81,7 @@ export function xhttpTls(proxy) {
 
     let sni = ""
     let allowInsecure = ""
-    const path = "&path" + encodeURIComponent(proxy.path)
+    const path = encodeURIComponent(proxy.path)
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
@@ -97,7 +97,7 @@ export function xhttpTls(proxy) {
         fp = proxy.fp
     }
 
-    return `trojan://${password}@${addr}:${port}?security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=xhttp${path}#${none}\n`
+    return `trojan://${password}@${addr}:${port}?security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=xhttp&path=${path}#${none}\n`
 }
 
 export function grpcTls(proxy) {

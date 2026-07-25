@@ -14,12 +14,12 @@ export function ws(proxy) {
     const uuid = proxy.uuid
     const port = proxy.port
 
-    const path = "&path" + encodeURIComponent(proxy.path)
+    const path = encodeURIComponent(proxy.path)
 
     const none = encodeURIComponent(proxy.none)
 
 
-    return `vmess://${uuid}@${addr}:${port}?encryption=auto&type=ws${path}#${none}\n`
+    return `vmess://${uuid}@${addr}:${port}?encryption=auto&type=ws&path=${path}#${none}\n`
 }
 
 
@@ -55,7 +55,7 @@ export function wsTls(proxy) {
 
     let sni = ""
     let allowInsecure = ""
-    const path = "&path" + encodeURIComponent(proxy.path)
+    const path = encodeURIComponent(proxy.path)
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
@@ -71,7 +71,7 @@ export function wsTls(proxy) {
         fp = proxy.fp
     }
 
-    return `vmess://${uuid}@${addr}:${port}?encryption=auto&security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=ws${path}#${none}\n`
+    return `vmess://${uuid}@${addr}:${port}?encryption=auto&security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=ws&path=${path}#${none}\n`
 }
 
 export function httpupgradeTls(proxy) {
@@ -81,7 +81,7 @@ export function httpupgradeTls(proxy) {
 
     let sni = ""
     let allowInsecure = ""
-    const path = "&path" + encodeURIComponent(proxy.path)
+    const path = encodeURIComponent(proxy.path)
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
@@ -97,7 +97,7 @@ export function httpupgradeTls(proxy) {
         fp = proxy.fp
     }
 
-    return `vmess://${uuid}@${addr}:${port}?encryption=auto&security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=httpupgrade${path}#${none}\n`
+    return `vmess://${uuid}@${addr}:${port}?encryption=auto&security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=httpupgrade&path=${path}#${none}\n`
 }
 
 export function xhttpTls(proxy) {
@@ -107,7 +107,7 @@ export function xhttpTls(proxy) {
 
     let sni = ""
     let allowInsecure = ""
-    const path = "&path" + encodeURIComponent(proxy.path)
+    const path = encodeURIComponent(proxy.path)
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
@@ -123,7 +123,7 @@ export function xhttpTls(proxy) {
         fp = proxy.fp
     }
 
-    return `vmess://${uuid}@${addr}:${port}?encryption=auto&security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=xhttp${path}#${none}\n`
+    return `vmess://${uuid}@${addr}:${port}?encryption=auto&security=tls${sni}&fp=${fp}&insecure=0${allowInsecure}&type=xhttp&path=${path}#${none}\n`
 }
 
 export function grpcTls(proxy) {

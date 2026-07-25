@@ -450,7 +450,7 @@ async function manualConfig(env) {
 		const name = user.name
 		let enable = true
 		const sub_url = user.sub_url
-		const model = user.model
+		let model = user.model
 		let autoSelect = false
 		let isCF = false
 		let addr = user.addr
@@ -497,6 +497,7 @@ async function manualConfig(env) {
 		if (isCF) {
 			l = "-0"
 			autoSelect = true
+			model = "cf+" + model
 			addr = ips[0].addr
 			port = ips[0].port
 			nodes = []
@@ -506,7 +507,7 @@ async function manualConfig(env) {
 						"addr": ips[i].addr,
 						"port": ips[i].port,
 						"sni": sni,
-						"none": `${front}${user.email}${Back}-${i}`
+						"none": `${user.none}-${i}`
 					})
 				}
 			}
@@ -516,6 +517,8 @@ async function manualConfig(env) {
 		usersOdj.users.push({
 			"name": name,
 			"enable": enable,
+			"up": "暂无",
+			"down": "暂无",
 			"sub_url": sub_url,
 			"autoSelect": autoSelect,
 			"isCF": isCF,

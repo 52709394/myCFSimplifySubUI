@@ -44,7 +44,7 @@ export function json(proxy) {
                 str += `"${p}"`
             }
         } else {
-            str = `${proxy.ports}`
+            str = `"${proxy.ports}"`
         }
 
         ports = `"server_ports": [${str}],`

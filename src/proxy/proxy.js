@@ -126,7 +126,17 @@ export async function htmlProxy(node, backup) {
     url = proxyFun(node);
 
     for (const n of node.nodes) {
-        node.addr = n.addr
+
+        if (n.addr === null || n.addr === "") {
+            continue;
+        }
+
+        if (isIPv6(n.addr)) {
+            node.addr = `[${n.addr}]`
+        } else {
+            node.addr = n.addr
+        }
+
         if (node.isCF) {
             node.port = n.port
         }
@@ -271,11 +281,16 @@ export async function jsonProxy(node, backup) {
     let proxys = ""
 
 
+
     outbounds = proxyFun(node)
     proxys = `"${node.none}"`
 
 
     for (const n of node.nodes) {
+
+        if (n.addr === null || n.addr === "") {
+            continue;
+        }
 
         node.addr = n.addr
         if (node.isCF) {
@@ -293,14 +308,14 @@ export async function jsonProxy(node, backup) {
         proxys += `"${n.none}"`
     }
 
+
+
     if (node.atuoSelect) {
         groups = proxySelect(`"auto"`)
         groups += proxyAtuo("auto", proxys, "3m")
     } else {
         groups = proxySelect(proxys)
     }
-
-
 
     return newSingboxJson(groups, outbounds)
 
@@ -449,6 +464,10 @@ export async function yamlProxy(node, backup) {
 
 
     for (const n of node.nodes) {
+
+        if (n.addr === null || n.addr === "") {
+            continue;
+        }
 
         node.addr = n.addr
         if (node.isCF) {

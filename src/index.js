@@ -118,13 +118,15 @@ export default {
 
 		if (SubConfig.manual_model != "true") {
 
-			if (SubConfig.node_cf === "true") {
-				await getIpsStr(env)
-			}
+
 
 			await getUsersData(env)
 			await updateGeofile()
 			//await getIpsStr(env)
+		}
+
+		if (SubConfig.node_cf === "true") {
+			await getIpsStr(env)
 		}
 	}
 };
@@ -193,7 +195,7 @@ async function userSubUrl(request, env) {
 
 	if (url.pathname === SubConfig.web_url + "/set.html") {
 
-		const output = await userSubSet(url, env)
+		const output = userSubSet()
 
 		return subUrl(output);
 	};

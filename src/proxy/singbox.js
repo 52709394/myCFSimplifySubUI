@@ -164,7 +164,7 @@ export function newSingboxJson(groups, outbounds) {
             }
         }
         `
-
+    //console.log(json);
     try {
 
         let jsonStr = JSON.parse(json);

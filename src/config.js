@@ -12,7 +12,7 @@ export async function getSubConfig(env) {
     SubConfig = JSON.parse(originConfig())
 }
 
-export async function userSubSet(env) {
+export function userSubSet() {
 
     let output = "";
 
@@ -222,11 +222,61 @@ export function renewConfig(obj) {
 
     if (Array.isArray(obj.users_arr)) {
         if (obj.users_arr.length) {
+
+            const modelList = [
+                "vmess+tcp+none",
+                "vmess+ws+none",
+                "vmess+tcp+tls",
+                "vmess+ws+tls",
+                "vmess+httpupgrade+tls",
+                "vmess+xhttp+tls",
+                "vless+tcp+tls",
+                "vless+ws+tls",
+                "vless+httpupgrade+tls",
+                "vless+xhttp+tls",
+                "vless+tcp+reality",
+                "vless+grpc+reality",
+                "vless+xhttp+reality",
+                "trojan+tcp+tls",
+                "trojan+ws+tls",
+                "trojan+httpupgrade+tls",
+                "trojan+xhttp+tls",
+                "hysteria",
+                "anytls",
+                "tuic"
+            ]
+
+
+
+            const subUrlArr = []
+
             for (const user of obj.users_arr) {
+
+                if (user.name === null || user.name === "") {
+                    return `name(${user.name}) 不能为空!`
+                }
+
+                subUrlArr.push(user.sub_url)
+                re = new RegExp("^\/[a-zA-Z0-9\/]{6,}\/" + user.name + "\.$");
+
+                if (!re.test(user.sub_url)) {
+                    return `sub_url(${user.sub_url}) 字段格式不正确 \n` +
+                        `(格式: /xxxxxx.../${user.name}.)`;
+                }
+
+                if (user.none === null || user.none === "") {
+                    return `none(${user.name}的none字段) 不能为空! \n`;
+                }
+
+                if (!modelList.includes(user.model)) {
+                    return `model(${user.name}的model字段) 不正确! \n` +
+                        `(可选值:\n ${modelList.join(`\n `)})`;
+                }
+
                 users_arr.push({
                     "name": user.name,
                     "enable": user.enable,
-                    "sub_url": user.autoSelect,
+                    "sub_url": user.sub_url,
                     "autoSelect": user.autoSelect,
                     "node_cf": user.node_cf,
                     "addr": user.addr,
@@ -243,10 +293,17 @@ export function renewConfig(obj) {
                     "sid": user.sid,
                     "isInsecure": user.isInsecure,
                     "fp": user.fp,
-                    "none": user.nome,
+                    "none": user.none,
                     "nodes": user.nodes
                 })
             }
+
+
+            if (new Set(subUrlArr).size !== subUrlArr.length) {
+                return `users_arr.sub_url 字段 users_arr.sub_url 不是唯一性 \n` +
+                    `(请检查 全有 users_arr.sub_url 字段)`;
+            }
+
             usersArr = users_arr
         }
     }
@@ -296,7 +353,7 @@ export function initConfig() {
 export function originConfig() {
     return `
         {
-            "说明":"带说明字段是可以直接删除的",
+            "说明":"说明在提交后自动删除掉!",
             "web_url 说明": "管理用户页面路径,已'/'开头",
             "web_url": "/52709394",
             "web_user 说明": "管理用户页面账号.",
@@ -350,8 +407,10 @@ export function originConfig() {
                 "nodes 说明": "多节点,相同协议,地址,sni,名称不一样,参考addr说明",
                 "nodes": [
                     {
+                        "addr 说明": "如有,必要写,节点地址",
                         "addr": null,
                         "sni": null,
+                        "none 说明": "如有,必要写,节点名称,确保与节点名称唯一性",
                         "none": null
                     }
                 ]
@@ -434,11 +493,11 @@ export function originConfig() {
             "users_arr": [
                 {
                     "name 说明": "必要,跟'email'字段一样,在用户显示用户名",
-                    "name": null,
+                    "name": "test-user",
                     "enable 说明": "参考'users_obj.enable'字段",
                     "enable": null,
-                    "sub_url 说明": "必要,用户前置路径,要唯一的,建议复杂点,例如:'/xxx/name.' 最终链接会以'html json yaml home'结尾",
-                    "sub_url": null,
+                    "sub_url 说明": "必要,用户前置路径,要唯一的,建议复杂点,必须以格式:'/xxxxxx.../name.' 最终链接会以'html json yaml home'结尾",
+                    "sub_url": "/xxxxxx/test-user.",
                     "autoSelect 说明": "参考'users_obj.autoSelect'字段",
                     "autoSelect": null,
                     "node_cf 说明": "参考'users_obj.node_cf'字段",
@@ -471,7 +530,7 @@ export function originConfig() {
                     "isInsecure": null,
                     "fp 说明": "节点'utls'设置,默认使用'chrome'",
                     "fp": null,
-                    "none 说明": "必要,节点名称'",
+                    "none 说明": "必要,节点名称'如果有nodes,确保与'nodes.none'唯一性",
                     "none": null,
                     "nodes 说明": "参考'all_user.nodes'说明",
                     "nodes": [
