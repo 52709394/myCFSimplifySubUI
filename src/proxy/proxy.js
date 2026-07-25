@@ -97,6 +97,9 @@ export async function htmlProxy(node, backup) {
     } else if (node.model === "anytls") {
         const { html } = await import("./anytls.js");
         proxyFun = html
+    } else if (node.model === "tuic") {
+        const { html } = await import("./tuic.js");
+        proxyFun = html
     } else if (node.model.startsWith("cf")) {
         const cf = await import("./cf/html");
 
@@ -217,6 +220,9 @@ export async function jsonProxy(node, backup) {
         proxyFun = json
     } else if (node.model === "anytls") {
         const { json } = await import("./anytls.js");
+        proxyFun = json
+    } else if (node.model === "tuic") {
+        const { json } = await import("./tuic.js");
         proxyFun = json
     } else if (node.model.startsWith("cf")) {
         const cf = await import("./cf/json");
@@ -386,7 +392,9 @@ export async function yamlProxy(node, backup) {
     } else if (node.model === "anytls") {
         const { yaml } = await import("./anytls.js");
         proxyFun = yaml
-
+    } else if (node.model === "tuic") {
+        const { yaml } = await import("./tuic.js");
+        proxyFun = yaml
     } else if (node.model.startsWith("cf")) {
         const cf = await import("./cf/yaml");
 

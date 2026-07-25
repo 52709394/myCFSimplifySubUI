@@ -84,6 +84,9 @@ export async function userSubSet(env) {
             JSON.parse(text);
         }
         catch(e){
+            send.disabled = false;
+            send.innerText = "提交";
+
             alert("JSON格式错误");
             return;
         }
@@ -143,6 +146,45 @@ export async function userSubSet(env) {
 }
 
 export function renewConfig(obj) {
+    let re
+
+
+    re = /^\/[a-zA-Z0-9]+$/;
+    if (!re.test(obj.web_url)) {
+        return "web_url 字段格式不正确";
+    }
+
+    re = /^.{3,16}$/;
+    if (!re.test(obj.web_user) &&
+        obj.web_user === undefined) {
+        return "web_user 字段格式不正确";
+    }
+
+    re = /^.{3,16}$/;
+    if (!re.test(obj.web_password) ||
+        obj.web_password === undefined) {
+        return "web_password 字段格式不正确";
+    }
+
+    re = /^.{3,16}$/;
+    if (!re.test(obj.user_password) ||
+        obj.user_password === undefined) {
+        obj.user_password = "52709394"
+    }
+
+    re = /^.{3,16}$/;
+    if (!re.test(obj.cookie_name) ||
+        obj.cookie_name === undefined) {
+        obj.cookie_name = "52709394"
+    }
+
+    re = /^.{3,16}$/;
+    if (!re.test(obj.cookie_value) ||
+        obj.cookie_value === undefined) {
+        obj.cookie_value = "52709394"
+    }
+
+
 
     const users_obj = {}
     const users_arr = []
@@ -193,6 +235,7 @@ export function renewConfig(obj) {
                     "model": user.model,
                     "uuid": user.uuid,
                     "password": user.password,
+                    "tuicCC": user.tuicCC,
                     "path": user.path,
                     "serviceName": user.serviceName,
                     "sni": user.sni,
@@ -213,8 +256,8 @@ export function renewConfig(obj) {
         "web_url": obj.web_url,
         "web_user": obj.web_user,
         "web_password": obj.web_password,
+        "user_password": obj.user_password,
         "cookie_name": obj.cookie_name,
-        "cookie_value": obj.cookie_value,
         "xui_url": obj.xui_url,
         "xui_token": obj.xui_token,
         "manual_model": obj.manual_model,
@@ -243,6 +286,7 @@ export function renewConfig(obj) {
 
     SubConfig = newObj
 
+    return ""
 }
 
 export function initConfig() {
@@ -259,6 +303,8 @@ export function originConfig() {
             "web_user": "52709394",
             "web_password 说明": "管理用户页面密码",
             "web_password": "52709394",
+            "user_password 说明": "用户页面密码",
+            "user_password": "52709394",
             "cookie_name 说明": "登录缓存名称",
             "cookie_name": "52709394",
             "cookie_value 说明": "登录缓存值",
@@ -381,7 +427,8 @@ export function originConfig() {
                 "手动模式,写为'hysteria'",
                 "hysteria2",
                 "只有手动模式",
-                "anytls"
+                "anytls",
+                "tuic"
             ],
             "users_arr 说明":"手动模式,'manual_model'为'true'即为启用",
             "users_arr": [
@@ -408,6 +455,8 @@ export function originConfig() {
                     "uuid": null,
                     "password 说明":"必要,节点 'password'",
                     "password": null,
+                    "tuicCC 说明": "节点 'tuic'的'congestion-controller'",
+                    "tuicCC": null,
                     "path 说明":"节点'ws','httpupgrade','xhttp'的'path'",
                     "path": null,
                     "serviceName 说明": "节点 'grpc'的'serviceName'",

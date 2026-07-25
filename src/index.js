@@ -259,7 +259,15 @@ async function userSubUrl(request, env) {
 			// 检查 JSON
 			let obj = JSON.parse(text);
 
-			renewConfig(obj)
+			const result = renewConfig(obj)
+
+			if (result !== "") {
+				return new Response(
+					"JSON错误: " + result,
+					{ status: 400 }
+				);
+			}
+
 			// 转字符串保存
 			let jsonString = JSON.stringify(SubConfig);
 
@@ -461,9 +469,9 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 
 	const url = new URL(request.url);
 	const USERNAME = name;
-	const PASSWORD = "52709394";
-	const COOKIE_NAME = "52709394";
-	const COOKIE_VALUE = "52709394";
+	const PASSWORD = SubConfig.user_password;
+	const COOKIE_NAME = SubConfig.cookie_name;
+	const COOKIE_VALUE = SubConfig.cookie_value;
 
 	const cookie = request.headers.get("Cookie") || "";
 	// 检查是否已登录（cookie 中是否有 token）
