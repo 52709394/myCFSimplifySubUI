@@ -7,10 +7,6 @@ export function html(proxy) {
     let allowInsecure = ""
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.ports) {
-        ports = encodeURIComponent(proxy.ports)
-        ports = `&mport=${ports}`
-    }
 
     if (proxy.sni) {
         sni = `&sni=${proxy.sni}`
@@ -20,7 +16,7 @@ export function html(proxy) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    return `anytls://${password}@${addr}:${port}?${sni}&alpn=h3${allowInsecure}${ports}#${none}\n`
+    return `anytls://${password}@${addr}:${port}?${sni}${allowInsecure}#${none}\n`
 
 }
 
@@ -57,7 +53,6 @@ export function yaml(proxy) {
     if (proxy.sni) {
         sniStr = `sni: ${proxy.sni}`
     }
-
 
 
     return `
