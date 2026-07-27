@@ -1,9 +1,11 @@
-import { SubConfig, getSubConfig, userSubSet, renewConfig, initConfig, originConfig } from './config.js';
-import { getUsersData, updateGeofile } from './proxy/getData.js'
+import { SubConfig, getSubConfig, userSubSet, renewConfig, initConfig, originConfig } from './config/set.js';
+import { getUsersData, updateGeofile } from './config/getData.js'
+import { getSingBoxData } from './config/singbox.js'
+import { getXrayData } from './config/xray.js'
 import { generateQRCode } from './qr_code.js';
 import * as proxy from './proxy/proxy.js';
 import { subUrl, nginx, loginText, layoutText } from './html.js';
-import { getIpsStr } from './ip_list.js';
+import { getIpsStr } from './config/ip_list.js';
 
 
 export default {
@@ -37,6 +39,8 @@ export default {
 			);
 		}
 
+
+		// getUserData2("222")
 
 		await getSubConfig(env)
 
@@ -199,8 +203,8 @@ async function userSubUrl(request, env) {
 	};
 
 	if (url.pathname === SubConfig.web_url + "/update" ||
-		url.pathname === SubConfig.web_url + "/init" ||
-		url.pathname === SubConfig.web_url + "/renew2") {
+		url.pathname === SubConfig.web_url + "/setinit" ||
+		url.pathname === SubConfig.web_url + "/renew") {
 
 		let _url = ""
 		let str = ""
@@ -208,7 +212,7 @@ async function userSubUrl(request, env) {
 		if (url.pathname === SubConfig.web_url + "/update") {
 			_url = SubConfig.web_url + "/home.html"
 			str = "用户数据更新成功"
-		} else if (url.pathname === SubConfig.web_url + "/init") {
+		} else if (url.pathname === SubConfig.web_url + "/setinit") {
 			initConfig()
 			await env.sub_data.put(
 				"subCofig",
@@ -250,7 +254,18 @@ async function userSubUrl(request, env) {
 
 	}
 
-	if (url.pathname === SubConfig.web_url + "/renew") {
+	const modelList = [
+		"/setrenew",
+		"/xrenew",
+		"/sbrenew",
+		"/xupdate",
+		"/sbupdate"
+	]
+
+	for (const model of modelList) {
+		if (url.pathname != SubConfig.web_url + model) {
+			continue
+		}
 
 		let text = await request.text();
 
@@ -259,7 +274,29 @@ async function userSubUrl(request, env) {
 			// 检查 JSON
 			let obj = JSON.parse(text);
 
-			const result = renewConfig(obj)
+			let result = ""
+
+			switch (model) {
+				case "/setrenew":
+					result = renewConfig(obj)
+					break;
+				case "/xrenew":
+					result = setUsersArr(getXrayData, obj)
+					break;
+				case "/sbrenew":
+					result = setUsersArr(getSingBoxData, obj)
+					break;
+				case "/xupdate":
+					result = setUsersArr(getXrayData, obj, "update")
+					break;
+				case "/sbupdate":
+					result = setUsersArr(getSingBoxData, obj, "update")
+					break;
+				default:
+					continue
+					break;
+			}
+
 
 			if (result !== "") {
 				return new Response(
@@ -279,15 +316,14 @@ async function userSubUrl(request, env) {
 			await getUsersData(env)
 
 			return new Response(
-				`${url.origin}${SubConfig.web_url}/renew2`, {
+				`${url.origin}${SubConfig.web_url}/renew`, {
 				headers: {
 					"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.web_url}; HttpOnly; Secure; SameSite=Strict`,
 					"Location": SubConfig.web_url + "",
 				}
 			});
 
-		}
-		catch (e) {
+		}catch (e) {
 
 			return new Response(
 				"JSON错误: " + e.message,
@@ -297,6 +333,8 @@ async function userSubUrl(request, env) {
 		}
 
 	}
+
+
 
 	// 登出逻辑
 	if (url.pathname === SubConfig.web_url + "/logout") {
@@ -311,6 +349,31 @@ async function userSubUrl(request, env) {
 
 	return nginx();
 
+
+}
+
+function setUsersArr(func, obj, model = "renew") {
+
+	const resultObj = func(obj)
+
+
+	if (resultObj.info != "") {
+		return resultObj.info
+	}
+
+	if (Object.hasOwn(SubConfig, "users_arr")) {
+		SubConfig["users_arr"] = []
+	} else if (!Array.isArray(SubConfig.users_arr)) {
+		SubConfig.users_arr = []
+	}
+
+	if (model = "renew") {
+		SubConfig.users_arr = resultObj.users_arr
+	} else {
+		SubConfig.users_arr = [...SubConfig.users_arr, ...resultObj.users_arr]
+	}
+
+	return ""
 
 }
 

@@ -145,6 +145,14 @@ export function layoutText(title, text) {
 			border-bottom: 2px solid red;
 		}
 
+		select {
+            display: block;
+            margin: 0 auto 10px auto;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 6px 12px;
+        }
+
 		.link-style {
 			background: none;
 			border: none;

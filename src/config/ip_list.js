@@ -1,4 +1,4 @@
-import { SubConfig } from "./config";
+import { SubConfig } from "./set";
 
 export async function getIpsStr(env) {
 

@@ -38,9 +38,18 @@ export function userSubSet() {
             </ul>
         </div>
     </nav>	
-    <h3>JSON 编辑</h3>
 
-    <button class="link-style" onclick="init()">初始化</button><br/><br/>
+    <h3>JSON 编辑</h3>
+        <!-- 选择处理模式 -->
+    <select id="mode" onchange="selectMode(this.value)">
+        <option value="/setrenew">简化订阅配置</option>
+        <option value="/xrenew">xray 配置提取</option>
+        <option value="/sbrenew">sing-box 配置提取</option>
+        <option value="/xupdate">xray 配置提取(追加)</option>
+        <option value="/sbupdate">sing-box 配置提取(追加)</option>
+    </select>
+
+    <button id="init" class="link-style" onclick="initSetJson()">初始化</button><br/><br/>
 
     <textarea class="text-set" id="json">
     ${config}
@@ -53,17 +62,47 @@ export function userSubSet() {
 
     <script>
 
-        function init() {
-           
-            if (!confirm(${iniSrt})) {
-               return;
-            }
-           
-            let text = document.getElementById("json").value;
+    let Url = document.getElementById("mode").value;
+    let Config = ${config};
+    
+    function selectMode(mode) {
+        
+        const jsonId = document.getElementById("json");
 
-            copyContent(text)
+        if (Url === mode) {
+            return;
+        }
 
-            window.location.replace("${SubConfig.web_url}/init");
+        if ( Url === "/setrenew" && 
+            mode != "/setrenew") {
+            Config = jsonId.value;
+            document.getElementById("init").style.visibility = 'hidden';
+            jsonId.value = "";
+        } else if (mode === "/setrenew" ){
+            jsonId.value = Config; 
+            document.getElementById("init").style.visibility = 'visible';
+        } else {
+            jsonId.value = "";
+        }    
+        
+        Url = mode;
+    }
+
+    function initSetJson() {
+
+        if ( Url != "/setrenew") {
+            return;
+        }
+           
+        if (!confirm(${iniSrt})) {
+            return;
+        }
+        
+        let text = document.getElementById("json").value;
+
+        copyContent(text)
+
+        window.location.replace("${SubConfig.web_url}/setinit");
     }
 
     async function submitJson(){
@@ -87,11 +126,13 @@ export function userSubSet() {
             send.disabled = false;
             send.innerText = "提交";
 
-            alert("JSON格式错误");
+            alert("JSON:格式错误");
             return;
         }
 
-        let res = await fetch("${SubConfig.web_url}/renew",{
+        const url = "${SubConfig.web_url}" + Url 
+        
+        let res = await fetch(url,{
             method:"POST",
             headers:{
             "Content-Type":"application/json"

@@ -1,5 +1,5 @@
-import { SubConfig } from '../config.js';
-import { getIpsStr, heightIps } from "../ip_list.js"
+import { SubConfig } from './set.js';
+import { getIpsStr, heightIps } from "./ip_list.js"
 
 export async function getUsersData(env) {
 
@@ -73,9 +73,9 @@ async function autoConfig(env) {
 				network === "httpupgrade" ||
 				network === "xhttp"
 			) {
-				path = obj.streamSettings[settingKey]?.path ?? "";
+				path = obj.streamSettings[`${settingKey}`]?.path ?? "";
 			} else if (network === "grpc") {
-				serviceName = obj.streamSettings[settingKey]?.serviceName ?? "";
+				serviceName = obj.streamSettings[`${settingKey}`]?.serviceName ?? "";
 			} else if (network === "raw") {
 				network = "tcp"
 			}
