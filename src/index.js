@@ -361,13 +361,14 @@ function setUsersArr(func, obj, model = "renew") {
 		return resultObj.info
 	}
 
-	if (Object.hasOwn(SubConfig, "users_arr")) {
+	if (!Object.hasOwn(SubConfig, "users_arr")) {
 		SubConfig["users_arr"] = []
 	} else if (!Array.isArray(SubConfig.users_arr)) {
 		SubConfig.users_arr = []
 	}
+	
 
-	if (model = "renew") {
+	if (model === "renew") {
 		SubConfig.users_arr = resultObj.users_arr
 	} else {
 		SubConfig.users_arr = [...SubConfig.users_arr, ...resultObj.users_arr]
