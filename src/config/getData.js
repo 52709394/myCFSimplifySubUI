@@ -46,6 +46,9 @@ async function autoConfig(env) {
 			}
 		}
 
+		if (typeof SubConfig.users_obj != 'object') {
+			SubConfig["users_obj"] = {}
+		}
 
 
 		for (const obj of data.obj) {
@@ -242,6 +245,12 @@ async function autoConfig(env) {
 					}
 				}
 
+				if (SubConfig.users_obj[`${user.email}`]?.isInsecure === "true") {
+					isInsecure = SubConfig.users_obj[`${user.email}`].isInsecure
+				} else if (SubConfig.all_user?.isInsecure) {
+					isInsecure = SubConfig.all_user.isInsecure
+				}
+
 				if (SubConfig.users_obj[`${user.email}`]?.none_front) {
 					front = SubConfig.users_obj[`${user.email}`].none_front
 				} else if (SubConfig.all_user?.front) {
@@ -264,6 +273,7 @@ async function autoConfig(env) {
 						"port": null,
 						"security": null,
 						"sni": null,
+						"isInsecure":null,
 						"nodes": []
 					}
 				}
