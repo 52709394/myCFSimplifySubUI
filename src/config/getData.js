@@ -188,6 +188,14 @@ async function autoConfig(env) {
 					security = "tls"
 				}
 
+				if (security === "tls") {
+					if (SubConfig.users_obj[`${user.email}`]?.sni != "" &&
+						SubConfig.users_obj[`${user.email}`]?.sni != null
+					) {
+						sni = SubConfig.users_obj[`${user.email}`].sni
+					}
+				}
+
 				if (obj.protocol === "vmess" ||
 					obj.protocol === "vless" ||
 					obj.protocol === "trojan"
@@ -269,11 +277,13 @@ async function autoConfig(env) {
 					newUsers[`${user.email}`] = {
 						"enable": null,
 						"none_atuo_select": null,
+						"node_cf": null,
 						"addr": null,
 						"port": null,
+						"ports": null,
 						"security": null,
 						"sni": null,
-						"isInsecure":null,
+						"isInsecure": null,
 						"nodes": []
 					}
 				}
@@ -463,7 +473,6 @@ async function manualConfig(env) {
 		const sub_url = user.sub_url
 		let model = user.model
 		let autoSelect = false
-		let isCF = false
 		let addr = user.addr
 		let port = user.port
 		const ports = user.ports
@@ -486,13 +495,16 @@ async function manualConfig(env) {
 			enable = false
 		}
 
-		if (user.autoSelect === "true") {
-			autoSelect = true
+		if (Array.isArray(nodes)) {
+			if ((user.none_atuo_select === "true" ||
+				SubConfig.none_atuo_select === "true") &&
+				nodes.length
+			) {
+				autoSelect = true
+			}
 		}
 
-		if (SubConfig.node_cf == "true" && user.node_cf === "true") {
-			isCF = true
-		}
+
 
 		if (user.isInsecure === "true") {
 			isInsecure = true

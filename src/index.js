@@ -323,7 +323,7 @@ async function userSubUrl(request, env) {
 				}
 			});
 
-		}catch (e) {
+		} catch (e) {
 
 			return new Response(
 				"JSON错误: " + e.message,
@@ -354,7 +354,7 @@ async function userSubUrl(request, env) {
 
 function setUsersArr(func, obj, model = "renew") {
 
-	const resultObj = func(obj)
+	const resultObj = func(obj, model)
 
 
 	if (resultObj.info != "") {
@@ -366,7 +366,7 @@ function setUsersArr(func, obj, model = "renew") {
 	} else if (!Array.isArray(SubConfig.users_arr)) {
 		SubConfig.users_arr = []
 	}
-	
+
 
 	if (model === "renew") {
 		SubConfig.users_arr = resultObj.users_arr

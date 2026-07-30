@@ -225,54 +225,61 @@ export function renewConfig(obj) {
         obj.cookie_value = "52709394"
     }
 
-
-
-    const users_obj = {}
-    const users_arr = []
     let usersObj, usersArr
+    let usersNotes
 
-    if (obj.users_obj) {
-
+    if (typeof obj.users_obj === 'object' && obj.users_obj != null) {
+        const users_obj = {}
         let isObj = false
+
         for (let key in obj.users_obj) {
-            if (Object.prototype.hasOwnProperty.call(obj.users_obj, key)) {
-                const value = obj.users_obj[key];
+            if (!Object.prototype.hasOwnProperty.call(obj.users_obj, key)) {
+                continue
+            }
 
-                if (typeof value === 'object' && value != null) {
-                    isObj = true
-                    const nodes = []
-                    if (Array.isArray(obj.users_obj[`${key}`].nodes)) {
-                        for (const n of obj.users_obj[`${key}`].nodes) {
-                            nodes.push({
-                                "addr": n.addr,
-                                "sni": n.sni,
-                                "none": n.none
-                            })
-                        }
-                    }
-                    users_obj[`${key}`] = {
-                        "enable": obj.users_obj[`${key}`].enable,
-                        "node_cf": obj.users_obj[`${key}`].node_cf,
-                        "none_atuo_select": obj.users_obj[`${key}`].none_atuo_select,
-                        "addr": obj.users_obj[`${key}`].addr,
-                        "port": obj.users_obj[`${key}`].port,
-                        "ports": obj.users_obj[`${key}`].ports,
-                        "security": obj.users_obj[`${key}`].security,
-                        "nodes": nodes
-                    }
+            const value = obj.users_obj[key];
 
+            if (typeof value != 'object' || value === null) {
+                continue
+            }
+
+            isObj = true
+            const nodes = []
+            if (Array.isArray(obj.users_obj[`${key}`].nodes)) {
+                for (const n of obj.users_obj[`${key}`].nodes) {
+                    nodes.push({
+                        "addr": n.addr,
+                        "sni": n.sni,
+                        "none": n.none
+                    })
                 }
             }
+
+            users_obj[`${key}`] = {
+                "enable": obj.users_obj[`${key}`].enable,
+                "node_cf": obj.users_obj[`${key}`].node_cf,
+                "none_atuo_select": obj.users_obj[`${key}`].none_atuo_select,
+                "addr": obj.users_obj[`${key}`].addr,
+                "port": obj.users_obj[`${key}`].port,
+                "ports": obj.users_obj[`${key}`].ports,
+                "sni": obj.users_obj[`${key}`].sni,
+                "security": obj.users_obj[`${key}`].security,
+                "nodes": nodes
+            }
+
         }
 
         if (isObj) {
             usersObj = users_obj
         }
 
+
     }
 
 
     if (Array.isArray(obj.users_arr)) {
+
+        const users_arr = []
         if (obj.users_arr.length) {
 
             const modelList = [
@@ -297,8 +304,6 @@ export function renewConfig(obj) {
                 "anytls",
                 "tuic"
             ]
-
-
 
             const subUrlArr = []
 
@@ -340,7 +345,7 @@ export function renewConfig(obj) {
                     "name": user.name,
                     "enable": user.enable,
                     "sub_url": user.sub_url,
-                    "autoSelect": user.autoSelect,
+                    "none_atuo_select": user.none_atuo_select,
                     "node_cf": user.node_cf,
                     "addr": user.addr,
                     "port": user.port,
@@ -369,6 +374,72 @@ export function renewConfig(obj) {
 
             usersArr = users_arr
         }
+    }
+
+    if (typeof obj.users_notes === 'object' && obj.users_notes != null) {
+
+        const users_notes = {}
+
+        let isObj = false
+
+        for (let key in obj.users_notes) {
+
+            if (!Object.prototype.hasOwnProperty.call(obj.users_notes, key)) {
+                continue
+            }
+
+            const value = obj.users_notes[`${key}`];
+
+            if (typeof value != 'object' || value === null) {
+                continue
+            }
+
+            isObj = true
+
+            const users = []
+
+            for (const user of obj.users_notes[`${key}`].users) {
+                users.push(
+                    {
+                        "name": user.name,
+                        sub_url: user.sub_url
+                    }
+                )
+            }
+
+   
+            const nodes = []
+            if (Array.isArray(obj.users_notes[`${key}`].nodes)) {
+                for (const n of obj.users_notes[`${key}`].nodes) {
+                    nodes.push({
+                        "addr": n.addr,
+                        "sni": n.sni,
+                        "none": n.none
+
+                    })
+                }
+            }
+
+            users_notes[`${key}`] = {
+                "none_atuo_select": obj.users_notes[`${key}`].none_atuo_select,
+                "node_cf": obj.users_notes[`${key}`].node_cf,
+                "addr": obj.users_notes[`${key}`].addr,
+                "port": obj.users_notes[`${key}`].port,
+                "ports": obj.users_notes[`${key}`].ports,
+                "sni": obj.users_notes[`${key}`].sni,
+                "isInsecure": obj.users_notes[`${key}`].isInsecure,
+                "users": users,
+                "nodes": nodes
+            }
+
+        }
+
+
+
+        if (isObj) {
+            usersNotes = users_notes
+        }
+
     }
 
     const nodes = []
@@ -413,7 +484,8 @@ export function renewConfig(obj) {
             "yaml": obj.backup.yaml
         },
         "users_obj": usersObj,
-        "users_arr": usersArr
+        "users_arr": usersArr,
+        "users_notes": usersNotes
     }
 
     SubConfig = newObj
@@ -428,7 +500,7 @@ export function initConfig() {
 export function originConfig() {
     return `
         {
-            "说明":"说明在提交后自动删除掉!",
+            "说明": "说明在提交后自动删除掉!",
             "web_url 说明": "管理用户页面路径,已'/'开头",
             "web_url": "/52709394",
             "web_user 说明": "管理用户页面账号.",
@@ -527,7 +599,7 @@ export function originConfig() {
                     "isInsecure 说明": "'tls'跳过证书验证",
                     "isInsecure": null,
                     "security 说明": "单独设置,参考'all_user.security'说明",
-                    "security": null,                   
+                    "security": null,
                     "nodes 说明": "单独设置,参考'all_user.nodes'说明",
                     "nodes": [
                         {
@@ -538,7 +610,7 @@ export function originConfig() {
                     ]
                 }
             },
-            "model 列表 说明":[
+            "model 列表 说明": [
                 "vmess+tcp+none",
                 "vmess+ws+none",
                 "vmess+tcp+tls",
@@ -621,7 +693,32 @@ export function originConfig() {
                         }
                     ]
                 }
-            ]
+            ],
+            "users_notes 说明1": "用于固定'xray'和'singbox'导入配置参数",
+            "users_notes 说明2": "首次导入'xray'和'singbox'导入配置时,自动生成空白参数",
+            "users_notes 说明3.1": "修改参数,提交保存,再次导入配置才生效",
+            "users_notes 说明3.2": "(导入配置过程中改变用户数据,保存'users_notes'设置不会变用户数据)",
+            "users_notes 说明4": "不支持追加模式导入!",
+            "users_notes": {
+                "test-user 说明": "对应导入配置的'xray'或'sing-box'的'inbounds[x].tag'如果对应,覆盖对应的参数",
+                "test-user": {
+                    "autoSelect": null,
+                    "node_cf": null,
+                    "addr": null,
+                    "port": null,
+                    "ports": null,
+                    "sni": null,
+                    "isInsecure": null,
+                    "users 说明": "当'inbounds[x].tag'和用户('name'或'email')是匹配的,采用'sub_url'固定的订阅路径",
+                    "users": [
+                        {
+                            "name": "xxxxxx",
+                            "sub_url": "/mZJQA5tJtIXaf3aB/xxxxxx."
+                        }
+                    ],
+                    "nodes": []
+                }
+            }
         }
     `
 }
