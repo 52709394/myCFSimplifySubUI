@@ -1,0 +1,6 @@
+{
+  "key": "my-secret-password-123",
+  "json": "./sConfig.json",
+  "port": "8080",
+  "path": "/encrypted-json"
+}

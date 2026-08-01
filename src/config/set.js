@@ -21,11 +21,11 @@ export function userSubSet() {
 
     iniSrt = "`" + `"是否初始化配置?\\n`
     iniSrt += `点击 "是" 继续\\n\\n`
-    iniSrt += `(自动原来配置备份到粘贴板)"` + "`"
+    iniSrt += `(原来配置,自动备份到粘贴板)"` + "`"
 
     renewSrt = "`" + `"是否更新配置?\\n`
     renewSrt += `点击 "是" 继续\\n\\n`
-    renewSrt += `(自动原来配置备份到粘贴板)"` + "`"
+    renewSrt += `(原来配置,自动备份到粘贴板)"` + "`"
 
     const config = JSON.stringify(SubConfig, null, 4)
 
@@ -407,7 +407,7 @@ export function renewConfig(obj) {
                 )
             }
 
-   
+
             const nodes = []
             if (Array.isArray(obj.users_notes[`${key}`].nodes)) {
                 for (const n of obj.users_notes[`${key}`].nodes) {
@@ -459,9 +459,9 @@ export function renewConfig(obj) {
         "web_password": obj.web_password,
         "user_password": obj.user_password,
         "cookie_name": obj.cookie_name,
-        "xui_url": obj.xui_url,
-        "xui_token": obj.xui_token,
-        "manual_model": obj.manual_model,
+        "proxy_model": obj.proxy_model,
+        "proxy_url": obj.proxy_url,
+        "proxy_key": obj.proxy_key,
         "node_cf": obj.node_cf,
         "cf_ips_url": obj.cf_ips_url,
         "none_atuo_select": obj.none_atuo_select,
@@ -513,14 +513,19 @@ export function originConfig() {
             "cookie_name": "52709394",
             "cookie_value 说明": "登录缓存值",
             "cookie_value": "52709394",
-            "xui_url 说明": "你的'3x-ui'地址",
-            "xui_url": null,
-            "xui_token 说明": "3x-ui 的 token",
-            "xui_token": null,
-            "manual_model 说明1": "手动模式,非'3x-ui'一样他可以使用,使用字串布尔值启用手动模式",
-            "manual_model 说明2": "不用设置 xui_url 和 xui_token",
-            "manual_model 说明3": "手动模式 使用'users_arr','3x-ui'使用'users_obj'",
-            "manual_model": null,
+            "proxy_model 说明1": "值为'3x-ui','xray','singbox','manual'",
+            "proxy_model 说明2": "手动模式 不用设置'proxy_url'和'proxy_key'",
+            "proxy_model 说明3": "手动模式 使用'users_arr','3x-ui'使用'users_obj'",
+            "proxy_model": "manual",
+            "proxy_url 说明1": "proxy_model 为'3x-ui' api地址",
+            "proxy_url 说明2": "proxy_model 为'xray' 配置的'地址",
+            "proxy_url 说明3": "proxy_model 为'singbox'配置的'地址",
+            "proxy_url": null,
+            "proxy_key 说明": "3x-ui 的 token",
+            "proxy_key 说明1": "proxy_model 为'3x-ui'的'token'",
+            "proxy_key 说明2": "proxy_model 为'xray'配置的解密'key'",
+            "proxy_key 说明3": "proxy_model 为'singbox'配置的解密'key'",
+            "proxy_key": null,
             "node_cf 说明": "'cf'优化模式并且单独用户设置也要开启,使用字串布尔值启用",
             "node_cf": null,
             "cf_ips_url 说明1": "'cf'优化ip库地址",
@@ -579,7 +584,7 @@ export function originConfig() {
             "users_obj 说明1": "'3x-ui'专用,参考'all_user'对象下字段和数组",
             "users_obj 说明2": "一般情况不用指定,例如:'nginx sni'分流,'VMess + WebSocket + 前置Nginx tls' 玩家指定 地址,端口,sni",
             "users_obj 说明3": "第一次使用,所有用户会自动填充'null'",
-            "users_obj 说明4": "'manual_model'不为'true'即为启用",
+            "users_obj 说明4": "'proxy_model'为'3x-ui'即为启用",
             "users_obj": {
                 "test-user 说明": "对应'3x-ui'email用户名",
                 "test-user": {
@@ -641,7 +646,7 @@ export function originConfig() {
                 "anytls",
                 "tuic"
             ],
-            "users_arr 说明":"手动模式,'manual_model'为'true'即为启用",
+            "users_arr 说明":"'proxy_model'不为'3x-ui'即为启用",
             "users_arr": [
                 {
                     "name 说明": "必要,跟'email'字段一样,在用户显示用户名",

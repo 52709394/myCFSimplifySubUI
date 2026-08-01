@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON 加密服务客户端</title>
+</head>
+<body>
+    <h1>加密 JSON 解密测试</h1>
+    <pre id="result">正在请求解密...</pre>
+
+    <script>
+        (async function() {
+            // 服务端配置（需与 config.json 一致）
+            const SERVER_URL = 'http://localhost:8080/encrypted-json';
+            const PASSWORD = 'my-secret-password-123';
+
+            try {
+                // 1. 获取加密数据（Base64）
+                const response = await fetch(SERVER_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const base64Encrypted = await response.text();
+
+                // 2. 从密码派生密钥 (SHA-256)
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(PASSWORD);
+                const keyBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw',
+                    keyBuffer,
+                    { name: 'AES-GCM' },
+                    false,
+                    ['decrypt']
+                );
+
+                // 3. 解码 Base64 得到 Uint8Array
+                const encryptedBytes = Uint8Array.from(atob(base64Encrypted), c => c.charCodeAt(0));
+
+                // 4. 提取 nonce (前 12 字节) 和密文 (剩余部分)
+                const nonceSize = 12; // AES-GCM 通常为 12 字节
+                const nonce = encryptedBytes.slice(0, nonceSize);
+                const ciphertext = encryptedBytes.slice(nonceSize);
+
+                // 5. 解密
+                const decryptedBuffer = await crypto.subtle.decrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: nonce,
+                    },
+                    cryptoKey,
+                    ciphertext
+                );
+
+                // 6. 解析 JSON
+                const decryptedText = new TextDecoder().decode(decryptedBuffer);
+                const jsonObj = JSON.parse(decryptedText);
+
+                document.getElementById('result').textContent = JSON.stringify(jsonObj, null, 2);
+            } catch (error) {
+                document.getElementById('result').textContent = '解密失败: ' + error.message;
+                console.error(error);
+            }
+        })();
+    </script>
+</body>
+</html>

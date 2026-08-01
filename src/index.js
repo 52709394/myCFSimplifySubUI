@@ -1,5 +1,6 @@
 import { SubConfig, getSubConfig, userSubSet, renewConfig, initConfig, originConfig } from './config/set.js';
-import { getUsersData, updateGeofile } from './config/getData.js'
+import { getUsersData } from './config/getData.js'
+import { updateGeofile } from './config/3x-ui.js';
 import { getSingBoxData } from './config/singbox.js'
 import { getXrayData } from './config/xray.js'
 import { generateQRCode } from './qr_code.js';
