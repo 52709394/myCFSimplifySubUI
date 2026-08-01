@@ -41,11 +41,8 @@ export default {
 		}
 
 
-		// getUserData2("222")
 
 		await getSubConfig(env)
-
-		//console.log(JSON.stringify(SubConfig));
 
 
 		const url = new URL(request.url);
@@ -121,11 +118,15 @@ export default {
 
 	async scheduled(_, env) {
 
-		if (SubConfig.manual_model != "true") {
-
+		if (SubConfig.proxy_model === "3x-ui" ||
+			SubConfig.proxy_model === "xray" ||
+			SubConfig.proxy_model === "sing-box"
+		) {
 			await getUsersData(env)
-			await updateGeofile()
-			//await getIpsStr(env)
+			
+			if (SubConfig.proxy_model === "3x-ui") {
+				await updateGeofile()
+			}
 		}
 
 		if (SubConfig.node_cf === "true") {
