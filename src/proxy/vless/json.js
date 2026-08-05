@@ -209,7 +209,6 @@ export function grpcReality(proxy) {
                 "transport": {
                     "type": "grpc",
                     "service_name": "${proxy.serviceName}" 
-                    }
                 },
 				"tls": {
 					"enabled": true,

@@ -1,5 +1,5 @@
 import { SubConfig } from "./set";
-import { getRandomStr, getPublicKeyFromPrivate } from "./tool";
+import { getRandomStr, getPublicKeyFromPrivate, getHost } from "./tool";
 
 
 export function getXrayData(config, modus) {
@@ -21,8 +21,8 @@ export function getXrayData(config, modus) {
             let autoSelect = "false"
             let isCF = "false"
             const protocol = inbound.protocol
-            let addr = inbound.listen ?? null
-            let port = inbound.port
+            let addr = null
+            let port = inbound.port ?? null
             let ports
             let network = inbound.streamSettings?.network ?? null;
             if (!network) {
@@ -44,6 +44,9 @@ export function getXrayData(config, modus) {
                 }
             }
 
+            if (SubConfig.proxy_model === "xray" && SubConfig.proxy_url != "") {
+                addr = getHost(SubConfig.proxy_url)
+            }
 
 
             if (protocol === "vmess" ||

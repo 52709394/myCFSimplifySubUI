@@ -1,5 +1,5 @@
 import { SubConfig } from "./set";
-import { getRandomStr, getPublicKeyFromPrivate } from "./tool";
+import { getRandomStr, getPublicKeyFromPrivate, getHost } from "./tool";
 
 
 export function getSingBoxData(config, modus) {
@@ -21,8 +21,8 @@ export function getSingBoxData(config, modus) {
             const protocol = inbound.type
             let autoSelect = "false"
             let isCF = "false"
-            let addr = inbound.listen ?? null
-            let port = inbound.listen_port
+            let addr = null
+            let port = inbound.listen_port ?? null
             let ports
             let model = inbound.type
             let path, serviceName
@@ -39,6 +39,10 @@ export function getSingBoxData(config, modus) {
                 if (typeof SubConfig.users_notes != 'object') {
                     SubConfig["users_notes"] = {}
                 }
+            }
+
+            if (SubConfig.proxy_model === "sing-box" && SubConfig.proxy_url != "") {
+                addr = getHost(SubConfig.proxy_url)
             }
 
             if (protocol === "vmess" ||

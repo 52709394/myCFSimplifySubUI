@@ -1,5 +1,6 @@
 import { setConfig, SubConfig } from './set.js';
 import { getIpsStr, heightIps } from "./ip_list.js"
+import { getHost } from './tool.js';
 
 
 export async function _3xuiConfig(env) {
@@ -411,29 +412,6 @@ export async function updateGeofile(token) {
     await geoipRes.json();
 
 }
-
-function getHost(str) {
-    str = str.trim();
-
-    // 没有协议时，补一个，方便 URL 解析
-    if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(str)) {
-        str = "http://" + str;
-    }
-
-    try {
-        let host = new URL(str).hostname;
-
-        // URL 对 IPv6 会带 []
-        if (host.startsWith("[") && host.endsWith("]")) {
-            host = host.slice(1, -1);
-        }
-
-        return host;
-    } catch {
-        return "";
-    }
-}
-
 
 
 function formatBytes(bytes, decimals = 2) {
