@@ -40,6 +40,9 @@ export async function htmlProxy(node, backup) {
             case "vmess+xhttp+tls":
                 proxyFun = vmess.xhttpTls
                 break;
+            case "vmess+grpc+tls":
+                proxyFun = vmess.grpcTls
+                break;
             default:
                 return nginx()
         }
@@ -57,6 +60,9 @@ export async function htmlProxy(node, backup) {
                 break;
             case "vless+xhttp+tls":
                 proxyFun = vless.xhttpTls
+                break;
+            case "vless+grpc+tls":
+                proxyFun = vless.grpcTls
                 break;
             case "vless+tcp+reality":
                 proxyFun = vless.tcpReality
@@ -183,6 +189,9 @@ export async function jsonProxy(node, backup) {
             case "vmess+httpupgrade+tls":
                 proxyFun = vmess.httpupgradeTls
                 break;
+            case "vmess+grpc+tls":
+                proxyFun = vmess.grpcTls
+                break;
             default:
                 return nginx()
         }
@@ -197,6 +206,9 @@ export async function jsonProxy(node, backup) {
                 break;
             case "vless+httpupgrade+tls":
                 proxyFun = vless.httpupgradeTls
+                break;
+            case "vless+grpc+tls":
+                proxyFun = vless.grpcTls
                 break;
             case "vless+tcp+reality":
                 proxyFun = vless.tcpReality
@@ -353,6 +365,9 @@ export async function yamlProxy(node, backup) {
             case "vmess+xhttp+tls":
                 proxyFun = vmess.xhttpTls
                 break;
+            case "vmess+grpc+tls":
+                proxyFun = vmess.grpcTls
+                break;
             default:
                 return nginx()
         }
@@ -367,6 +382,9 @@ export async function yamlProxy(node, backup) {
                 break;
             case "vless+xhttp+tls":
                 proxyFun = vless.xhttpTls
+                break;
+            case "vless+grpc+tls":
+                proxyFun = vless.grpcTls
                 break;
             case "vless+tcp+reality":
                 proxyFun = vless.tcpReality

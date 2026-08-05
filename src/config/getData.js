@@ -1,4 +1,4 @@
-import { SubConfig } from './set.js';
+import { SubConfig, setConfig } from './set.js';
 import { _3xuiConfig } from './3x-ui.js';
 import { manualConfig } from './manual.js';
 import { getXrayData } from './xray.js';
@@ -11,8 +11,8 @@ export async function getUsersData(env) {
 		await _3xuiConfig(env)
 	} else if (SubConfig.proxy_model === "xray" ||
 		SubConfig.proxy_model === "sing-box") {
-		
-	    const config = await fetchData()
+
+		const config = await fetchData()
 		let resultObj
 
 		if (SubConfig.proxy_model === "xray") {
@@ -25,13 +25,17 @@ export async function getUsersData(env) {
 			return resultObj.info
 		}
 
-		if (!Object.hasOwn(SubConfig, "users_arr")) {
-			SubConfig["users_arr"] = []
-		} else if (!Array.isArray(SubConfig.users_arr)) {
-			SubConfig.users_arr = []
+		let newConfig = SubConfig
+
+		if (!Object.hasOwn(newConfig, "users_arr")) {
+			newConfig["users_arr"] = []
+		} else if (!Array.isArray(newConfig.users_arr)) {
+			newConfig.users_arr = []
 		}
 
-		SubConfig.users_arr = resultObj.users_arr
+		newConfig.users_arr = resultObj.users_arr
+
+		setConfig(newConfig)
 
 		await manualConfig(env)
 

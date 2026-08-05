@@ -130,7 +130,10 @@ export async function manualConfig(env) {
 
     }
 
+    const configStr = JSON.stringify(SubConfig)
     const usersStr = JSON.stringify(usersOdj)
+
+    await env.sub_data.put("subCofig", configStr)
     await env.sub_data.put("usersData", usersStr)
 
 

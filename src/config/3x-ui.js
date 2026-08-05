@@ -1,4 +1,4 @@
-import { SubConfig } from './set.js';
+import { setConfig, SubConfig } from './set.js';
 import { getIpsStr, heightIps } from "./ip_list.js"
 
 
@@ -357,9 +357,11 @@ export async function _3xuiConfig(env) {
             }
         }
 
+        let newConfig = SubConfig
 
+        newConfig.users_obj = newUsers
 
-        SubConfig.users_obj = newUsers
+        setConfig(newConfig)
 
         const configStr = JSON.stringify(SubConfig)
         const usersStr = JSON.stringify(usersOdj)

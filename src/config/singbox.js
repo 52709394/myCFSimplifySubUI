@@ -84,6 +84,12 @@ export function getSingBoxData(config, modus) {
                 } else if (inbound.tls?.enabled) {
                     model += "+tls"
                     sni = inbound.tls.serverName
+                } else if (typeof SubConfig.users_notes === 'object') {
+                    if (SubConfig.users_notes[`${tag}`]?.security === "tls") {
+                        model += "+tls"
+                    } else {
+                        model += "+none"
+                    }
                 } else if (SubConfig.all_user?.manual_write === "true" &&
                     SubConfig.all_user?.security === "tls") {
                     model += "+tls"
@@ -177,6 +183,7 @@ export function getSingBoxData(config, modus) {
                     "ports": null,
                     "sni": null,
                     "isInsecure": null,
+                    "security": null,
                     "users": [],
                     "nodes": []
                 }

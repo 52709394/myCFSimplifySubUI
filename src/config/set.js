@@ -287,18 +287,30 @@ export function renewConfig(obj) {
                 "vmess+ws+none",
                 "vmess+tcp+tls",
                 "vmess+ws+tls",
+                "vmess+httpupgrade+none",
                 "vmess+httpupgrade+tls",
+                "vmess+xhttp+none",
                 "vmess+xhttp+tls",
+                "vmess+grpc+none",
+                "vmess+grpc+tls",
                 "vless+tcp+tls",
+                "vless+ws+none",
                 "vless+ws+tls",
+                "vless+httpupgrade+none",
                 "vless+httpupgrade+tls",
+                "vless+xhttp+none",
                 "vless+xhttp+tls",
+                "vless+grpc+none",
+                "vless+grpc+tls",
                 "vless+tcp+reality",
                 "vless+grpc+reality",
                 "vless+xhttp+reality",
                 "trojan+tcp+tls",
+                "trojan+ws+none",
                 "trojan+ws+tls",
+                "trojan+httpupgrade+none",
                 "trojan+httpupgrade+tls",
+                "trojan+xhttp+none",
                 "trojan+xhttp+tls",
                 "hysteria",
                 "anytls",
@@ -428,6 +440,7 @@ export function renewConfig(obj) {
                 "ports": obj.users_notes[`${key}`].ports,
                 "sni": obj.users_notes[`${key}`].sni,
                 "isInsecure": obj.users_notes[`${key}`].isInsecure,
+                "security": obj.users_notes[`${key}`].security,
                 "users": users,
                 "nodes": nodes
             }
@@ -491,6 +504,10 @@ export function renewConfig(obj) {
     SubConfig = newObj
 
     return ""
+}
+
+export function setConfig(obj) {
+    SubConfig = obj
 }
 
 export function initConfig() {

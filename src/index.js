@@ -118,19 +118,19 @@ export default {
 
 	async scheduled(_, env) {
 
-		if (SubConfig.proxy_model === "3x-ui" ||
+		if (SubConfig.node_cf === "true") {
+			await getIpsStr(env)
+			await getUsersData(env)
+		} else if (SubConfig.proxy_model === "3x-ui" ||
 			SubConfig.proxy_model === "xray" ||
 			SubConfig.proxy_model === "sing-box"
 		) {
-			await getUsersData(env)
 			
+			await getUsersData(env)
+
 			if (SubConfig.proxy_model === "3x-ui") {
 				await updateGeofile()
 			}
-		}
-
-		if (SubConfig.node_cf === "true") {
-			await getIpsStr(env)
 		}
 	}
 };
@@ -307,13 +307,6 @@ async function userSubUrl(request, env) {
 				);
 			}
 
-			// 转字符串保存
-			let jsonString = JSON.stringify(SubConfig);
-
-			await env.sub_data.put(
-				"subCofig",
-				jsonString
-			);
 
 			await getUsersData(env)
 
@@ -362,19 +355,21 @@ function setUsersArr(func, obj, model = "renew") {
 	if (resultObj.info != "") {
 		return resultObj.info
 	}
+	let newConfig = SubConfig
 
-	if (!Object.hasOwn(SubConfig, "users_arr")) {
-		SubConfig["users_arr"] = []
-	} else if (!Array.isArray(SubConfig.users_arr)) {
-		SubConfig.users_arr = []
+	if (!Object.hasOwn(newConfig, "users_arr")) {
+		newConfig["users_arr"] = []
+	} else if (!Array.isArray(newConfig.users_arr)) {
+		newConfig.users_arr = []
 	}
-
 
 	if (model === "renew") {
-		SubConfig.users_arr = resultObj.users_arr
+		newConfig.users_arr = resultObj.users_arr
 	} else {
-		SubConfig.users_arr = [...SubConfig.users_arr, ...resultObj.users_arr]
+		newConfig.users_arr = [...newConfig.users_arr, ...resultObj.users_arr]
 	}
+
+	renewConfig(newConfig)
 
 	return ""
 
