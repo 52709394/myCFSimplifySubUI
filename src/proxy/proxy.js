@@ -100,6 +100,9 @@ export async function htmlProxy(node, backup) {
     } else if (node.model === "hysteria") {
         const { html } = await import("./hysteria2");
         proxyFun = html
+    } else if (node.model === "naive") {
+        const { html } = await import("./naive.js");
+        proxyFun = html
     } else if (node.model === "anytls") {
         const { html } = await import("./anytls.js");
         proxyFun = html
@@ -244,6 +247,12 @@ export async function jsonProxy(node, backup) {
 
     } else if (node.model == "hysteria") {
         const { json } = await import("./hysteria2");
+        proxyFun = json
+    } else if (node.model === "naive") {
+        const { json } = await import("./naive.js");
+        proxyFun = json
+    } else if (node.model === "snell") {
+        const { json } = await import("./snell.js");
         proxyFun = json
     } else if (node.model === "anytls") {
         const { json } = await import("./anytls.js");
@@ -426,6 +435,9 @@ export async function yamlProxy(node, backup) {
 
     } else if (node.model === "hysteria") {
         const { yaml } = await import("./hysteria2");
+        proxyFun = yaml
+    } else if (node.model === "snell") {
+        const { yaml } = await import("./snell.js");
         proxyFun = yaml
     } else if (node.model === "anytls") {
         const { yaml } = await import("./anytls.js");

@@ -24,6 +24,7 @@ export function getSingBoxData(config, modus) {
             let addr = null
             let port = inbound.listen_port ?? null
             let ports
+            let snell_psk
             let model = inbound.type
             let path, serviceName
             let tuicCC
@@ -105,7 +106,11 @@ export function getSingBoxData(config, modus) {
                 model = "hysteria"
             } else if (protocol === "tuic") {
                 tuicCC = inbound.congestion_control
-            } else if (protocol != "anytls") {
+            } else if (protocol === "snell") {
+                snell_psk = inbound.psk
+            } else if (!(protocol === "anytls" ||
+                protocol === "naive"
+            )) {
                 continue
             }
 
@@ -198,8 +203,21 @@ export function getSingBoxData(config, modus) {
             for (const user of inbound.users) {
                 let name = user.name ?? "";
                 let sub_url
-                const uuid = user.uuid
-                const password = user.password
+                let uuid = user.uuid
+                let password
+
+                if (protocol === "naive") {
+                    name = user.username
+                } else {
+                    name = user.name
+                }
+
+                if (protocol === "snell") {
+                   password = user.userkey      
+                } else {
+                   password = user.password
+                }
+
 
                 sub_url = `/${getRandomStr(16)}/${name}\.`
                 if (name === "") {
@@ -250,6 +268,7 @@ export function getSingBoxData(config, modus) {
                         "uuid": uuid,
                         "password": password,
                         "tuicCC": tuicCC,
+                        "snell_psk": snell_psk,
                         "path": path,
                         "serviceName": serviceName,
                         "sni": sni,

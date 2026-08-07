@@ -315,7 +315,9 @@ export function renewConfig(obj) {
                 "trojan+xhttp+tls",
                 "hysteria",
                 "anytls",
-                "tuic"
+                "tuic",
+                "naive",
+                "snell"
             ]
 
             const subUrlArr = []
@@ -368,6 +370,7 @@ export function renewConfig(obj) {
                     "uuid": user.uuid,
                     "password": user.password,
                     "tuicCC": user.tuicCC,
+                    "snell_psk":user.snell_psk,
                     "path": user.path,
                     "serviceName": user.serviceName,
                     "sni": user.sni,
@@ -664,9 +667,13 @@ export function originConfig() {
                 "trojan+xhttp+tls",
                 "手动模式,写为'hysteria'",
                 "hysteria2",
-                "只有手动模式",
+                "以下只有手动模式",
                 "anytls",
-                "tuic"
+                "tuic",
+                "不支持clash",
+                "naive",
+                "不支持html模式",
+                "snell"
             ],
             "users_arr 说明":"'proxy_model'不为'3x-ui'即为启用",
             "users_arr": [
@@ -697,6 +704,8 @@ export function originConfig() {
                     "password": null,
                     "tuicCC 说明": "节点 'tuic'的'congestion-controller'",
                     "tuicCC": null,
+                    "snell_psk 说明": "节点 'snell'的'psk'",
+                    "snell_psk":null,
                     "path 说明":"节点'ws','httpupgrade','xhttp'的'path'",
                     "path": null,
                     "serviceName 说明": "节点 'grpc'的'serviceName'",

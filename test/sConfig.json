@@ -284,6 +284,37 @@
             }
         },
         {
+            "type": "naive",
+            "tag": "sNaive",
+            "listen": "::",
+            "listen_port": 8,
+            "users": [
+                {
+                    "username": "naive-1",
+                    "password": "b04eb6a2a02ee164"
+                }
+            ],
+            "tls": {
+                "enabled": true,
+                "certificate_path": "/root/fullchain.cer",
+                "key_path": "/root/private.key"
+            }
+        },
+        {
+            "type": "snell",
+            "tag": "sSnell",
+            "listen": "::",
+            "listen_port": 8,
+            "psk": "password",
+            "users": [
+                {
+                    "name": "snell-1",
+                    "userkey": "b04eb6a2a02ee164"
+                }
+            ],
+            "obfs_mode": "http"
+        },
+        {
             "type": "shadowtls",
             "tag": "sshadowtls",
             "listen": "::",

@@ -41,6 +41,7 @@ export async function manualConfig(env) {
         const ports = user.ports
         const uuid = user.uuid
         const password = user.password
+        const snellPsk = user.snell_psk
         const tuicCC = user.tuicCC
         const path = user.path
         const serviceName = user.serviceName
@@ -115,7 +116,7 @@ export async function manualConfig(env) {
             "sub_url": sub_url,
             "autoSelect": autoSelect,
             "isCF": isCF,
-            "isBase64":isBase64,
+            "isBase64": isBase64,
             "addr": addr,
             "port": port,
             "ports": ports,
@@ -123,6 +124,7 @@ export async function manualConfig(env) {
             "uuid": uuid,
             "password": password,
             "tuicCC": tuicCC,
+            "snellPsk": snellPsk,
             "path": path,
             "serviceName": serviceName,
             "sni": sni,
