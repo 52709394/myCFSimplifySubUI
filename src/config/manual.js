@@ -35,6 +35,7 @@ export async function manualConfig(env) {
         const sub_url = user.sub_url
         let model = user.model
         let autoSelect = false
+        let isBase64 = true
         let addr = user.addr
         let port = user.port
         const ports = user.ports
@@ -55,6 +56,10 @@ export async function manualConfig(env) {
 
         if (user.enable === "false") {
             enable = false
+        }
+
+        if (user.proxurl_not_base64 === "true") {
+            isBase64 = false
         }
 
         if (Array.isArray(nodes)) {
@@ -110,6 +115,7 @@ export async function manualConfig(env) {
             "sub_url": sub_url,
             "autoSelect": autoSelect,
             "isCF": isCF,
+            "isBase64":isBase64,
             "addr": addr,
             "port": port,
             "ports": ports,

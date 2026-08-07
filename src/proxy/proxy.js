@@ -151,7 +151,12 @@ export async function htmlProxy(node, backup) {
         url += proxyFun(node);
     }
 
-    req_data = base64EncodeUnicode(url);
+    if (node.isBase64) {
+        req_data = base64EncodeUnicode(url);
+    } else {
+        req_data = url
+    }
+
 
     return responseURL(req_data);
 

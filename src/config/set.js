@@ -259,6 +259,7 @@ export function renewConfig(obj) {
                 "enable": obj.users_obj[`${key}`].enable,
                 "node_cf": obj.users_obj[`${key}`].node_cf,
                 "none_atuo_select": obj.users_obj[`${key}`].none_atuo_select,
+                "proxurl_not_base64": obj.users_obj[`${key}`].proxurl_not_base64,
                 "addr": obj.users_obj[`${key}`].addr,
                 "port": obj.users_obj[`${key}`].port,
                 "ports": obj.users_obj[`${key}`].ports,
@@ -359,6 +360,7 @@ export function renewConfig(obj) {
                     "sub_url": user.sub_url,
                     "none_atuo_select": user.none_atuo_select,
                     "node_cf": user.node_cf,
+                    "proxurl_not_base64": user.proxurl_not_base64,
                     "addr": user.addr,
                     "port": user.port,
                     "ports": user.ports,
@@ -414,7 +416,8 @@ export function renewConfig(obj) {
                 users.push(
                     {
                         "name": user.name,
-                        sub_url: user.sub_url
+                        "nodes": user.nodes,
+                        "sub_url": user.sub_url
                     }
                 )
             }
@@ -435,14 +438,14 @@ export function renewConfig(obj) {
             users_notes[`${key}`] = {
                 "none_atuo_select": obj.users_notes[`${key}`].none_atuo_select,
                 "node_cf": obj.users_notes[`${key}`].node_cf,
+                "proxurl_not_base64": obj.users_notes[`${key}`].proxurl_not_base64,
                 "addr": obj.users_notes[`${key}`].addr,
                 "port": obj.users_notes[`${key}`].port,
                 "ports": obj.users_notes[`${key}`].ports,
                 "sni": obj.users_notes[`${key}`].sni,
                 "isInsecure": obj.users_notes[`${key}`].isInsecure,
                 "security": obj.users_notes[`${key}`].security,
-                "users": users,
-                "nodes": nodes
+                "users": users
             }
 
         }
@@ -612,6 +615,8 @@ export function originConfig() {
                     "node_cf": null,
                     "none_atuo_select 说明": "参考全局说明,可单独开启,使用字串布尔值启用",
                     "none_atuo_select": null,
+                    "proxurl_not_base64 说明": "订阅链接不用base64,使用字串布尔值启用",
+                    "proxurl_not_base64":null,
                     "addr 说明": "单独设置,参考'all_user.addr'说明",
                     "addr": null,
                     "port 说明": "单独设置,参考'all_user.port'说明",
@@ -676,6 +681,8 @@ export function originConfig() {
                     "autoSelect": null,
                     "node_cf 说明": "参考'users_obj.node_cf'字段",
                     "node_cf": null,
+                    "proxurl_not_base64 说明": "订阅链接不用base64,使用字串布尔值启用",
+                    "proxurl_not_base64":null,
                     "addr 说明": "必要,节点地址",
                     "addr": null,
                     "port 说明": "必要,节点端口",
@@ -726,6 +733,7 @@ export function originConfig() {
                 "test-user": {
                     "autoSelect": null,
                     "node_cf": null,
+                    "proxurl_not_base64":null,
                     "addr": null,
                     "port": null,
                     "ports": null,

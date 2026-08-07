@@ -158,10 +158,16 @@ export async function _3xuiConfig(env) {
                 let uuid, password
 
                 let model = ""
+                
+                let isBase64 = true
 
                 const up = formatBytes(stats[`${user.email}`]?.up)
 
                 const down = formatBytes(stats[`${user.email}`]?.down)
+
+                if (SubConfig.users_obj[`${user.email}`]?.proxurl_not_base64 === "true") {
+                    isBase64 = false
+                }
 
                 if (SubConfig.users_obj[`${user.email}`]?.addr) {
                     addr = SubConfig.users_obj[`${user.email}`].addr
@@ -270,6 +276,7 @@ export async function _3xuiConfig(env) {
                     newUsers[`${user.email}`] = {
                         "enable": null,
                         "none_atuo_select": null,
+                        "proxurl_not_base64": null,
                         "node_cf": null,
                         "addr": null,
                         "port": null,
@@ -289,6 +296,7 @@ export async function _3xuiConfig(env) {
                         "down": down,
                         "enable": enable,
                         "autoSelect": autoSelect,
+                        "isBase64":isBase64,
                         "addr": addr,
                         "port": port,
                         "sub_url": `/${obj.port}/${user.subId}/${user.email}\.`,
@@ -338,6 +346,7 @@ export async function _3xuiConfig(env) {
                         "enable": enable,
                         "autoSelect": autoSelect,
                         "isCF": isCF,
+                        "isBase64":isBase64,
                         "addr": addr,
                         "port": port,
                         "ports": ports,

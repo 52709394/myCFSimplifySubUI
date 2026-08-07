@@ -170,8 +170,6 @@ export function getSingBoxData(config, modus) {
                     isInsecure = "true"
                 }
 
-
-                nodes = SubConfig.users_notes[`${tag}`].nodes
                 users = SubConfig.users_notes[`${tag}`].users
 
                 newNotes[`${tag}`] = SubConfig.users_notes[`${tag}`]
@@ -188,8 +186,7 @@ export function getSingBoxData(config, modus) {
                     "sni": null,
                     "isInsecure": null,
                     "security": null,
-                    "users": [],
-                    "nodes": []
+                    "users": []
                 }
 
             }
@@ -213,7 +210,13 @@ export function getSingBoxData(config, modus) {
                     for (const user of users) {
                         if (user.name === name) {
                             const re = new RegExp("^\/[a-zA-Z0-9\/]{6,}\/" + user.name + "\.$");
+
                             if (re.test(user.sub_url)) {
+                                if (Array.isArray(user.nodes)) {
+                                    if (user.nodes.length) {
+                                        nodes = user.nodes
+                                    }
+                                }
                                 sub_url = user.sub_url
                                 break;
                             }
@@ -222,6 +225,7 @@ export function getSingBoxData(config, modus) {
 
                     newUsers.push({
                         "name": name,
+                        "nodes": nodes,
                         "sub_url": sub_url
                     })
 
