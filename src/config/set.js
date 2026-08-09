@@ -69,16 +69,16 @@ export function userSubSet() {
         
         const jsonId = document.getElementById("json");
 
-        if (Url === mode) {
+        if (Url == mode) {
             return;
         }
 
-        if ( Url === "/setrenew" && 
+        if ( Url == "/setrenew" && 
             mode != "/setrenew") {
             Config = jsonId.value;
             document.getElementById("init").style.visibility = 'hidden';
             jsonId.value = "";
-        } else if (mode === "/setrenew" ){
+        } else if (mode == "/setrenew" ){
             jsonId.value = Config; 
             document.getElementById("init").style.visibility = 'visible';
         } else {
@@ -189,46 +189,48 @@ export function userSubSet() {
 export function renewConfig(obj) {
     let re
 
-
     re = /^\/[a-zA-Z0-9]+$/;
     if (!re.test(obj.web_url)) {
-        return "web_url 字段格式不正确";
+        return `配置错误:\n` +
+            "web_url 字段格式不正确";
     }
 
     re = /^.{3,16}$/;
     if (!re.test(obj.web_user) &&
-        obj.web_user === undefined) {
-        return "web_user 字段格式不正确";
+        obj.web_user == null) {
+        return `配置错误:\n` +
+            "web_user 字段格式不正确";
     }
 
     re = /^.{3,16}$/;
     if (!re.test(obj.web_password) ||
-        obj.web_password === undefined) {
-        return "web_password 字段格式不正确";
+        obj.web_password == null) {
+        return `配置错误:\n` +
+            "web_password 字段格式不正确";
     }
 
     re = /^.{3,16}$/;
     if (!re.test(obj.user_password) ||
-        obj.user_password === undefined) {
+        obj.user_password == null) {
         obj.user_password = "52709394"
     }
 
     re = /^.{3,16}$/;
     if (!re.test(obj.cookie_name) ||
-        obj.cookie_name === undefined) {
+        obj.cookie_name == null) {
         obj.cookie_name = "52709394"
     }
 
     re = /^.{3,16}$/;
     if (!re.test(obj.cookie_value) ||
-        obj.cookie_value === undefined) {
+        obj.cookie_value == null) {
         obj.cookie_value = "52709394"
     }
 
     let usersObj, usersArr
     let usersNotes
 
-    if (typeof obj.users_obj === 'object' && obj.users_obj != null) {
+    if (typeof obj.users_obj == 'object' && obj.users_obj != null) {
         const users_obj = {}
         let isObj = false
 
@@ -239,7 +241,7 @@ export function renewConfig(obj) {
 
             const value = obj.users_obj[key];
 
-            if (typeof value != 'object' || value === null) {
+            if (typeof value != 'object' || value == null) {
                 continue
             }
 
@@ -324,24 +326,28 @@ export function renewConfig(obj) {
 
             for (const user of obj.users_arr) {
 
-                if (user.name === null || user.name === "") {
-                    return `name(${user.name}) 不能为空!`
+                if (user.name == null || user.name == "") {
+                    return `配置错误:\n` +
+                        `name(${user.name}) 不能为空!`
                 }
 
                 subUrlArr.push(user.sub_url)
                 re = new RegExp("^\/[a-zA-Z0-9\/]{6,}\/" + user.name + "\.$");
 
                 if (!re.test(user.sub_url)) {
-                    return `sub_url(${user.sub_url}) 字段格式不正确 \n` +
+                    return `配置错误:\n` +
+                        `sub_url(${user.sub_url}) 字段格式不正确 \n` +
                         `(格式: /xxxxxx.../${user.name}.)`;
                 }
 
-                if (user.none === null || user.none === "") {
-                    return `none(${user.name}的none字段) 不能为空! \n`;
+                if (user.none == null || user.none == "") {
+                    return `配置错误:\n` +
+                        ` none(${user.name}的none字段) 不能为空! \n`;
                 }
 
                 if (!modelList.includes(user.model)) {
-                    return `model(${user.name}的model字段) 不正确! \n` +
+                    return `配置错误:\n` +
+                        `model(${user.name}的model字段) 不正确! \n` +
                         `(可选值:\n ${modelList.join(`\n `)})`;
                 }
 
@@ -370,7 +376,7 @@ export function renewConfig(obj) {
                     "uuid": user.uuid,
                     "password": user.password,
                     "tuicCC": user.tuicCC,
-                    "snell_psk":user.snell_psk,
+                    "snell_psk": user.snell_psk,
                     "path": user.path,
                     "serviceName": user.serviceName,
                     "sni": user.sni,
@@ -385,15 +391,16 @@ export function renewConfig(obj) {
 
 
             if (new Set(subUrlArr).size !== subUrlArr.length) {
-                return `users_arr.sub_url 字段 users_arr.sub_url 不是唯一性 \n` +
-                    `(请检查 全有 users_arr.sub_url 字段)`;
+                return `配置错误:\n` +
+                    `users_arr.sub_url 字段 users_arr.sub_url 不是唯一性 \n` +
+                    `(请检查 所有 users_arr.sub_url 字段)`;
             }
 
             usersArr = users_arr
         }
     }
 
-    if (typeof obj.users_notes === 'object' && obj.users_notes != null) {
+    if (typeof obj.users_notes == 'object' && obj.users_notes != null) {
 
         const users_notes = {}
 
@@ -407,7 +414,7 @@ export function renewConfig(obj) {
 
             const value = obj.users_notes[`${key}`];
 
-            if (typeof value != 'object' || value === null) {
+            if (typeof value != 'object' || value == null) {
                 continue
             }
 

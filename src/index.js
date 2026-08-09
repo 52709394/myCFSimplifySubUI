@@ -49,7 +49,7 @@ export default {
 
 		if (url.pathname.includes(SubConfig.web_url)) {
 
-			if (url.pathname === SubConfig.web_url) {
+			if (url.pathname == SubConfig.web_url) {
 				url.pathname = SubConfig.web_url + '/home.html'
 				return Response.redirect(url.toString(), 301)
 			}
@@ -118,17 +118,16 @@ export default {
 
 	async scheduled(_, env) {
 
-		if (SubConfig.node_cf === "true") {
+		if (SubConfig.node_cf == "true") {
 			await getIpsStr(env)
-			await getUsersData(env)
-		} else if (SubConfig.proxy_model === "3x-ui" ||
-			SubConfig.proxy_model === "xray" ||
-			SubConfig.proxy_model === "sing-box"
-		) {
-			
-			await getUsersData(env)
+		}
 
-			if (SubConfig.proxy_model === "3x-ui") {
+		if (SubConfig.proxy_model == "3x-ui" ||
+			SubConfig.proxy_model == "xray" ||
+			SubConfig.proxy_model == "sing-box"
+		) {
+			await getUsersData(env)
+			if (SubConfig.proxy_model == "3x-ui") {
 				await updateGeofile()
 			}
 		}
@@ -150,12 +149,12 @@ async function userSubUrl(request, env) {
 	if (!cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
 
 		// 登录处理
-		if (url.pathname === SubConfig.web_url + "/login" && request.method === "POST") {
+		if (url.pathname == SubConfig.web_url + "/login" && request.method == "POST") {
 			const formData = await request.formData();
 			const username = formData.get("username");
 			const password = formData.get("password");
 
-			if (username === USERNAME && password === PASSWORD) {
+			if (username == USERNAME && password == PASSWORD) {
 				// 登录成功，设置 Cookie
 				return new Response(null, {
 					status: 302,
@@ -173,9 +172,9 @@ async function userSubUrl(request, env) {
 		}
 
 		// 未登录，展示登录页面
-		if (url.pathname === SubConfig.web_url + "/login" ||
-			url.pathname === SubConfig.web_url + "/home.html" ||
-			url.pathname === SubConfig.web_url + "/set.html"
+		if (url.pathname == SubConfig.web_url + "/login" ||
+			url.pathname == SubConfig.web_url + "/home.html" ||
+			url.pathname == SubConfig.web_url + "/set.html"
 		) {
 
 			const text = loginText(SubConfig.web_url + "/login")
@@ -190,31 +189,31 @@ async function userSubUrl(request, env) {
 
 	};
 
-	if (url.pathname === SubConfig.web_url + "/home.html") {
+	if (url.pathname == SubConfig.web_url + "/home.html") {
 
 		let output = await userSubHome(url, env)
 		return subUrl(output);
 	};
 
 
-	if (url.pathname === SubConfig.web_url + "/set.html") {
+	if (url.pathname == SubConfig.web_url + "/set.html") {
 
 		const output = userSubSet()
 
 		return subUrl(output);
 	};
 
-	if (url.pathname === SubConfig.web_url + "/update" ||
-		url.pathname === SubConfig.web_url + "/setinit" ||
-		url.pathname === SubConfig.web_url + "/renew") {
+	if (url.pathname == SubConfig.web_url + "/update" ||
+		url.pathname == SubConfig.web_url + "/setinit" ||
+		url.pathname == SubConfig.web_url + "/renew") {
 
 		let _url = ""
 		let str = ""
 
-		if (url.pathname === SubConfig.web_url + "/update") {
+		if (url.pathname == SubConfig.web_url + "/update") {
 			_url = SubConfig.web_url + "/home.html"
 			str = "用户数据更新成功"
-		} else if (url.pathname === SubConfig.web_url + "/setinit") {
+		} else if (url.pathname == SubConfig.web_url + "/setinit") {
 			initConfig()
 			await env.sub_data.put(
 				"subCofig",
@@ -271,68 +270,68 @@ async function userSubUrl(request, env) {
 
 		let text = await request.text();
 
-		try {
+		// try {
 
-			// 检查 JSON
-			let obj = JSON.parse(text);
+		// 检查 JSON
+		let obj = JSON.parse(text);
 
-			let result = ""
+		let result = ""
 
-			switch (model) {
-				case "/setrenew":
-					result = renewConfig(obj)
-					break;
-				case "/xrenew":
-					result = setUsersArr(getXrayData, obj)
-					break;
-				case "/sbrenew":
-					result = setUsersArr(getSingBoxData, obj)
-					break;
-				case "/xupdate":
-					result = setUsersArr(getXrayData, obj, "update")
-					break;
-				case "/sbupdate":
-					result = setUsersArr(getSingBoxData, obj, "update")
-					break;
-				default:
-					continue
-					break;
-			}
-
-
-			if (result !== "") {
-				return new Response(
-					"JSON错误: " + result,
-					{ status: 400 }
-				);
-			}
+		switch (model) {
+			case "/setrenew":
+				result = renewConfig(obj)
+				break;
+			case "/xrenew":
+				result = setUsersArr(getXrayData, obj)
+				break;
+			case "/sbrenew":
+				result = setUsersArr(getSingBoxData, obj)
+				break;
+			case "/xupdate":
+				result = setUsersArr(getXrayData, obj, "update")
+				break;
+			case "/sbupdate":
+				result = setUsersArr(getSingBoxData, obj, "update")
+				break;
+			default:
+				continue
+				break;
+		}
 
 
-			await getUsersData(env)
+		if (result == "") {
+			result = await getUsersData(env)
+		}
 
+		if (result != "") {
 			return new Response(
-				`${url.origin}${SubConfig.web_url}/renew`, {
-				headers: {
-					"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.web_url}; HttpOnly; Secure; SameSite=Strict`,
-					"Location": SubConfig.web_url + "",
-				}
-			});
-
-		} catch (e) {
-
-			return new Response(
-				"JSON错误: " + e.message,
+				result,
 				{ status: 400 }
 			);
-
 		}
+
+
+		return new Response(
+			`${url.origin}${SubConfig.web_url}/renew`, {
+			headers: {
+				"Set-Cookie": `${SubConfig.cookie_name}=${SubConfig.cookie_value}; path=${SubConfig.web_url}; HttpOnly; Secure; SameSite=Strict`,
+				"Location": SubConfig.web_url + "",
+			}
+		});
+
+		// } catch (e) {
+
+		// 	return new Response(
+		// 		"JSON错误: " + e.message,
+		// 		{ status: 400 }
+		// 	);
+
+		// }
 
 	}
 
-
-
 	// 登出逻辑
-	if (url.pathname === SubConfig.web_url + "/logout") {
+	if (url.pathname == SubConfig.web_url + "/logout") {
 		return new Response(null, {
 			status: 302,
 			headers: {
@@ -363,15 +362,14 @@ function setUsersArr(func, obj, model = "renew") {
 		newConfig.users_arr = []
 	}
 
-	if (model === "renew") {
+	if (model == "renew") {
 		newConfig.users_arr = resultObj.users_arr
 	} else {
 		newConfig.users_arr = [...newConfig.users_arr, ...resultObj.users_arr]
 	}
 
-	renewConfig(newConfig)
-
-	return ""
+	
+	return renewConfig(newConfig)
 
 }
 
@@ -540,12 +538,12 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 		(url.pathname != userUrl + "logout")) {
 
 		// 登录处理
-		if (url.pathname === userUrl + "home" && request.method === "POST") {
+		if (url.pathname == userUrl + "home" && request.method == "POST") {
 			const formData = await request.formData();
 			const username = formData.get("username");
 			const password = formData.get("password");
 
-			if (username === USERNAME && password === PASSWORD) {
+			if (username == USERNAME && password == PASSWORD) {
 				// 登录成功，设置 Cookie
 				return new Response(null, {
 					status: 302,
@@ -563,7 +561,7 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 		}
 
 		// 未登录，展示登录页面
-		if (url.pathname === userUrl + "home") {
+		if (url.pathname == userUrl + "home") {
 
 			const text = loginText(userUrl + "home")
 
@@ -579,7 +577,7 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 	}
 
 
-	if (url.pathname === userUrl + "home") {
+	if (url.pathname == userUrl + "home") {
 
 		let output = "";
 		output += `
@@ -677,7 +675,7 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 	};
 
 	// 登出逻辑
-	if (url.pathname === userUrl + "logout") {
+	if (url.pathname == userUrl + "logout") {
 		return new Response(null, {
 			status: 302,
 			headers: {

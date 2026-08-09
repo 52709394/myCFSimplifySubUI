@@ -14,11 +14,18 @@ export function getSingBoxData(config, modus) {
         const newNotes = {}
         for (const inbound of config.inbounds) {
 
+            const protocol = inbound.type
+
+            if (protocol == null ||
+                protocol == ""
+            ) {
+                continue
+            }
+
             const tag = inbound.tag ?? ""
             let isNotes = false
             let users = []
             const newUsers = []
-            const protocol = inbound.type
             let autoSelect = "false"
             let isCF = "false"
             let addr = null
@@ -34,7 +41,7 @@ export function getSingBoxData(config, modus) {
             let nodes = []
 
 
-            if (tag != "" && modus === "renew") {
+            if (tag != "" && modus == "renew") {
                 isNotes = true
 
                 if (typeof SubConfig.users_notes != 'object') {
@@ -42,18 +49,18 @@ export function getSingBoxData(config, modus) {
                 }
             }
 
-            if (SubConfig.proxy_model === "sing-box" && SubConfig.proxy_url != "") {
+            if (SubConfig.proxy_model == "sing-box" && SubConfig.proxy_url != "") {
                 addr = getHost(SubConfig.proxy_url)
             }
 
-            if (protocol === "vmess" ||
-                protocol === "vless" ||
-                protocol === "trojan"
+            if (protocol == "vmess" ||
+                protocol == "vless" ||
+                protocol == "trojan"
             ) {
                 if (inbound.transport?.type) {
-                    if (inbound.transport?.type === "ws" ||
-                        inbound.transport?.type === "httpupgrade" ||
-                        inbound.transport?.type === "grpc"
+                    if (inbound.transport?.type == "ws" ||
+                        inbound.transport?.type == "httpupgrade" ||
+                        inbound.transport?.type == "grpc"
                     ) {
                         model += `+${inbound.transport?.type}`
 
@@ -68,13 +75,13 @@ export function getSingBoxData(config, modus) {
                         model += "+tcp"
                     }
 
-                } else if (inbound.transport?.type === "http") {
+                } else if (inbound.transport?.type == "http") {
                     continue
                 } else {
                     model += "+tcp"
                 }
 
-                if (protocol === "vless" && inbound.tls?.reality?.enabled) {
+                if (protocol == "vless" && inbound.tls?.reality?.enabled) {
                     model += "+reality"
                     sni = inbound.tls.server_name
                     try {
@@ -89,43 +96,43 @@ export function getSingBoxData(config, modus) {
                 } else if (inbound.tls?.enabled) {
                     model += "+tls"
                     sni = inbound.tls.serverName
-                } else if (typeof SubConfig.users_notes === 'object') {
-                    if (SubConfig.users_notes[`${tag}`]?.security === "tls") {
+                } else if (typeof SubConfig.users_notes == 'object') {
+                    if (SubConfig.users_notes[`${tag}`]?.security == "tls") {
                         model += "+tls"
                     } else {
                         model += "+none"
                     }
-                } else if (SubConfig.all_user?.manual_write === "true" &&
-                    SubConfig.all_user?.security === "tls") {
+                } else if (SubConfig.all_user?.manual_write == "true" &&
+                    SubConfig.all_user?.security == "tls") {
                     model += "+tls"
                 } else {
                     model += "+none"
                 }
 
-            } else if (protocol === "hysteria2") {
+            } else if (protocol == "hysteria2") {
                 model = "hysteria"
-            } else if (protocol === "tuic") {
+            } else if (protocol == "tuic") {
                 tuicCC = inbound.congestion_control
-            } else if (protocol === "snell") {
+            } else if (protocol == "snell") {
                 snell_psk = inbound.psk
-            } else if (!(protocol === "anytls" ||
-                protocol === "naive"
+            } else if (!(protocol == "anytls" ||
+                protocol == "naive"
             )) {
                 continue
             }
 
-            if (SubConfig.all_user?.manual_write === "true") {
+            if (SubConfig.all_user?.manual_write == "true") {
 
-                if (SubConfig.autoSelect === "true") {
+                if (SubConfig.autoSelect == "true") {
                     autoSelect = "true"
                 }
 
                 // 用户也同时开启
-                // if (SubConfig.node_cf === "true") { 
+                // if (SubConfig.node_cf == "true") { 
                 //     isCF = "true"
                 // }
 
-                if (SubConfig.all_user.isInsecure === "true") {
+                if (SubConfig.all_user.isInsecure == "true") {
                     isInsecure = "true"
                 }
 
@@ -148,13 +155,13 @@ export function getSingBoxData(config, modus) {
 
 
             if (isNotes &&
-                typeof SubConfig.users_notes[`${tag}`] === 'object') {
+                typeof SubConfig.users_notes[`${tag}`] == 'object') {
 
-                if (SubConfig.users_notes[`${tag}`].none_atuo_select === "true") {
+                if (SubConfig.users_notes[`${tag}`].none_atuo_select == "true") {
                     autoSelect = "true"
                 }
 
-                if (SubConfig.users_notes[`${tag}`].node_cf === "true") {
+                if (SubConfig.users_notes[`${tag}`].node_cf == "true") {
                     isCF = "true"
                 }
 
@@ -171,7 +178,7 @@ export function getSingBoxData(config, modus) {
                     sni = SubConfig.users_notes[`${tag}`].sni
                 }
 
-                if (SubConfig.users_notes[`${tag}`].isInsecure === "true") {
+                if (SubConfig.users_notes[`${tag}`].isInsecure == "true") {
                     isInsecure = "true"
                 }
 
@@ -201,32 +208,35 @@ export function getSingBoxData(config, modus) {
             }
 
             for (const user of inbound.users) {
-                let name = user.name ?? "";
+                let name = user.name;
                 let sub_url
                 let uuid = user.uuid
                 let password
 
-                if (protocol === "naive") {
+                if (protocol == "naive") {
                     name = user.username
                 } else {
                     name = user.name
                 }
 
-                if (protocol === "snell") {
-                   password = user.userkey      
+                if (protocol == "snell") {
+                    password = user.userkey
                 } else {
-                   password = user.password
+                    password = user.password
                 }
 
-
                 sub_url = `/${getRandomStr(16)}/${name}\.`
-                if (name === "") {
+
+                if (name == "" ||
+                    name == null ||
+                     name == undefined
+                ) {
                     name = getRandomStr(6)
                     sub_url = `/${getRandomStr(16)}/${name}\.`
                 } else if (isNotes) {
 
                     for (const user of users) {
-                        if (user.name === name) {
+                        if (user.name == name) {
                             const re = new RegExp("^\/[a-zA-Z0-9\/]{6,}\/" + user.name + "\.$");
 
                             if (re.test(user.sub_url)) {
@@ -293,8 +303,18 @@ export function getSingBoxData(config, modus) {
 
     } catch (e) {
 
-        json.info = `无法提取"sing-box json" 配置数据`
+        json.info = `"sing-box json"错误:\n`
+        json.info += e.message
     }
+
+
+    if (arr.length == 0 &&
+        json.info == ""
+    ) {
+        json.info = `"sing-box json"错误:\n无法提取有效数据`
+    }
+
+
 
     return json
 

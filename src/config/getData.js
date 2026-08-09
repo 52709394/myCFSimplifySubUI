@@ -6,19 +6,23 @@ import { getSingBoxData } from './singbox.js';
 
 export async function getUsersData(env) {
 
-	if (SubConfig.proxy_model === "3x-ui") {
-		console.log("Fetching 3x-ui config...");
-		await _3xuiConfig(env)
-	} else if (SubConfig.proxy_model === "xray" ||
-		SubConfig.proxy_model === "sing-box") {
+	if (SubConfig.proxy_model == "3x-ui") {
+		return await _3xuiConfig(env)
+	} else if (SubConfig.proxy_model == "xray" ||
+		SubConfig.proxy_model == "sing-box") {
 
-		const config = await fetchData()
+		const origData = await fetchData()
+
+		if (origData.info != "") {
+			return origData.info 
+		}
+
 		let resultObj
 
-		if (SubConfig.proxy_model === "xray") {
-			resultObj = getXrayData(config, "renew")
+		if (SubConfig.proxy_model == "xray") {
+			resultObj = getXrayData(origData.config, "renew")
 		} else {
-			resultObj = getSingBoxData(config, "renew")
+			resultObj = getSingBoxData(origData.config, "renew")
 		}
 
 		if (resultObj.info != "") {
@@ -39,13 +43,24 @@ export async function getUsersData(env) {
 
 		await manualConfig(env)
 
+		return ""
+
 	} else {
 		await manualConfig(env)
+
+		return ""
 	}
 
 }
 
 async function fetchData() {
+
+	const obj = {}
+
+	const proxyData = {
+		"info": "",
+		config: obj
+	}
 	// 服务端配置（需与 config.json 一致）
 	const SERVER_URL = SubConfig.proxy_url;
 	const PASSWORD = SubConfig.proxy_key;
@@ -90,13 +105,13 @@ async function fetchData() {
 
 		// 6. 解析 JSON
 		const decryptedText = new TextDecoder().decode(decryptedBuffer);
-		const jsonObj = JSON.parse(decryptedText);
+		proxyData.config = JSON.parse(decryptedText);
 
-		return jsonObj;
+		return proxyData;
 	} catch (e) {
-		return new Response(e.message, {
-			status: 500
-		});
+		proxyData.info = `远程配置错误:\n`
+		proxyData.info += `${e.message}`
+		return proxyData
 	}
 }
 
