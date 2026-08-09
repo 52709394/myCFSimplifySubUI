@@ -65,6 +65,7 @@ export function yaml(proxy) {
   - name: "${proxy.none}"
     type: tuic
     server: "${proxy.addr}"
+    port: ${proxy.port}    
     uuid: ${proxy.uuid}
     password: ${proxy.password}
     congestion-controller: ${proxy.tuicCC}

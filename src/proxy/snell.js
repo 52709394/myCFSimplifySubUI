@@ -21,11 +21,12 @@ export function yaml(proxy) {
   - name: "${proxy.none}"
     type: snell
     server: "${proxy.addr}"
+    port: ${proxy.port}    
     psk: ${proxy.snellPsk}
     version: 5
     udp: true
     obfs-opts:
-      mode: http
-      password: ${proxy.password}   
+      mode: http 
+      password: ${proxy.password}  
 		`
 }
