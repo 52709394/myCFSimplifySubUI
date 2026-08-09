@@ -213,7 +213,7 @@ export function getXrayData(config, modus) {
                 sub_url = `/${getRandomStr(16)}/${name}\.`
 
                 if (name == "" ||
-                    name == null 
+                    name == null
                 ) {
                     name = getRandomStr(6)
                     sub_url = `/${getRandomStr(16)}/${name}\.`
@@ -244,6 +244,18 @@ export function getXrayData(config, modus) {
 
                 }
 
+
+                let front = ""
+                let Back = ""
+
+                if (SubConfig.none_front != null) {
+                    front = SubConfig.none_front
+                }
+
+                if (SubConfig.none_back != null) {
+                    Back = SubConfig.none_back
+                }
+
                 arr.push(
                     {
                         "name": name,
@@ -267,7 +279,7 @@ export function getXrayData(config, modus) {
                         "sid": sid,
                         "isInsecure": isInsecure,
                         "fp": null,
-                        "none": name,
+                        "none": `${front}${name}${Back}`,
                         "nodes": nodes
                     }
                 )

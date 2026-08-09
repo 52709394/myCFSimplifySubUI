@@ -55,7 +55,7 @@ export async function _3xuiConfig(env) {
             let network = obj.streamSettings.network;
             const settingKey = `${network}Settings`;
             let path, serviceName
-            let isInsecure = false
+            let isInsecure = "false"
             let security
             let front = ""
             let Back = ""
@@ -76,11 +76,11 @@ export async function _3xuiConfig(env) {
                 network = "tcp"
             }
 
-            if (SubConfig.all_user?.addr) {
+            if (SubConfig.all_user?.addr != null) {
                 addr = SubConfig.all_user.addr
             }
 
-            if (SubConfig.all_user?.port) {
+            if (SubConfig.all_user?.port != null) {
                 port = SubConfig.all_user.port
             } else {
                 port = obj.port
@@ -109,10 +109,12 @@ export async function _3xuiConfig(env) {
             } else if (security == "tls" &&
                 SubConfig.all_user?.security != "tls"
             ) {
-                if (obj.streamSettings.tlsSettings.serverName != "") {
+                if (obj.streamSettings.tlsSettings.serverName != "" &&
+                    obj.streamSettings.tlsSettings.serverName != null
+                ) {
                     sni = obj.streamSettings.tlsSettings.serverName
                 }
-                if (obj.streamSettings.tlsSettings?.settings.fingerprint) {
+                if (obj.streamSettings.tlsSettings?.settings.fingerprint != null) {
                     fp = obj.streamSettings.tlsSettings?.settings.fingerprint
                 }
             }
@@ -133,11 +135,11 @@ export async function _3xuiConfig(env) {
                 }
             }
 
-            if (SubConfig.none_front) {
+            if (SubConfig.none_front != null) {
                 front = SubConfig.none_front
             }
 
-            if (SubConfig.none_back) {
+            if (SubConfig.none_back != null) {
                 Back = SubConfig.none_back
             }
 
@@ -169,13 +171,13 @@ export async function _3xuiConfig(env) {
                     isBase64 = false
                 }
 
-                if (SubConfig.users_obj[`${user.email}`]?.addr) {
+                if (SubConfig.users_obj[`${user.email}`]?.addr != null) {
                     addr = SubConfig.users_obj[`${user.email}`].addr
                 } else if (SubConfig.all_user?.addr) {
                     addr = SubConfig.all_user.addr
                 }
 
-                if (SubConfig.users_obj[`${user.email}`]?.port) {
+                if (SubConfig.users_obj[`${user.email}`]?.port != null) {
                     port = SubConfig.users_obj[`${user.email}`].port
                 } else if (SubConfig.all_user?.port) {
                     port = SubConfig.all_user.port
@@ -235,7 +237,7 @@ export async function _3xuiConfig(env) {
                 ) {
                     autoSelect = true
                 } else if (SubConfig.none_atuo_select == "true" &&
-                    !SubConfig.users_obj[`${user.email}`]?.none_atuo_select &&
+                    SubConfig.users_obj[`${user.email}`]?.none_atuo_select != "true" &&
                     nodes.length
                 ) {
                     autoSelect = true
@@ -245,32 +247,44 @@ export async function _3xuiConfig(env) {
 
 
                 if (obj.protocol == "hysteria") {
-                    if (SubConfig.users_obj[`${user.email}`]?.ports) {
+                    if (SubConfig.users_obj[`${user.email}`]?.ports != null) {
                         ports = SubConfig.users_obj[`${user.email}`].ports
-                    } else if (SubConfig.all_user?.ports) {
+                    } else if (SubConfig.all_user?.ports != null) {
                         ports = SubConfig.all_user.ports
                     }
                 }
 
                 if (SubConfig.users_obj[`${user.email}`]?.isInsecure == "true") {
                     isInsecure = SubConfig.users_obj[`${user.email}`].isInsecure
-                } else if (SubConfig.all_user?.isInsecure) {
+                } else if (SubConfig.all_user?.isInsecure == "true") {
                     isInsecure = SubConfig.all_user.isInsecure
+                } else {
+                    isInsecure = "false"
                 }
 
-                if (SubConfig.users_obj[`${user.email}`]?.none_front) {
-                    front = SubConfig.users_obj[`${user.email}`].none_front
-                } else if (SubConfig.all_user?.front) {
-                    front = SubConfig.all_user.front
+                // if (SubConfig.users_obj[`${user.email}`]?.none_front != null) {
+                //     front = SubConfig.users_obj[`${user.email}`].none_front
+                // } else if (SubConfig.none_front != null) {
+                //     front = SubConfig.none_front
+                // }
+
+                // if (SubConfig.users_obj[`${user.email}`]?.none_back != null) {
+                //     back = SubConfig.users_obj[`${user.email}`].none_back;
+                // } else if (SubConfig.none_back != null) {
+                //     back = SubConfig.none_back;
+                // }
+
+                if (SubConfig.none_front != null) {
+                    front = SubConfig.none_front
                 }
 
-                if (SubConfig.users_obj[`${user.email}`]?.none_back) {
-                    front = SubConfig.users_obj[`${user.email}`].none_back;
-                } else if (SubConfig.all_user?.none_back) {
-                    front = SubConfig.all_user.backup;
+                if (SubConfig.none_back != null) {
+                    back = SubConfig.none_back;
                 }
 
-                if (SubConfig.users_obj[`${user.email}`]) {
+                if (typeof SubConfig.users_obj[`${user.email}`] == 'object' &&
+                    SubConfig.users_obj[`${user.email}`] != null
+                ) {
                     newUsers[`${user.email}`] = SubConfig.users_obj[`${user.email}`]
                 } else {
                     newUsers[`${user.email}`] = {

@@ -229,7 +229,7 @@ export function getSingBoxData(config, modus) {
 
                 if (name == "" ||
                     name == null ||
-                     name == undefined
+                    name == undefined
                 ) {
                     name = getRandomStr(6)
                     sub_url = `/${getRandomStr(16)}/${name}\.`
@@ -259,7 +259,16 @@ export function getSingBoxData(config, modus) {
 
                 }
 
+                let front = ""
+                let Back = ""
 
+                if (SubConfig.none_front != null) {
+                    front = SubConfig.none_front
+                }
+
+                if (SubConfig.none_back != null) {
+                    Back = SubConfig.none_back
+                }
 
 
                 arr.push(
@@ -286,7 +295,7 @@ export function getSingBoxData(config, modus) {
                         "sid": sid,
                         "isInsecure": isInsecure,
                         "fp": null,
-                        "none": name,
+                        "none": `${front}${name}${Back}`,
                         "nodes": nodes
                     }
                 )
