@@ -27,7 +27,7 @@ export function userSubSet() {
     renewSrt += `点击 "是" 继续\\n\\n`
     renewSrt += `(原来配置,自动备份到粘贴板)"` + "`"
 
-    const config =  JSON.stringify(SubConfig, null, 4)
+    const config = JSON.stringify(SubConfig, null, 4)
     const d = "`"
 
     output = `
@@ -429,6 +429,7 @@ export function renewConfig(obj) {
                 users.push(
                     {
                         "name": user.name,
+                        "proxurl_not_base64": user.proxurl_not_base64,
                         "nodes": user.nodes,
                         "sub_url": user.sub_url
                     }
@@ -451,7 +452,6 @@ export function renewConfig(obj) {
             users_notes[`${key}`] = {
                 "none_atuo_select": obj.users_notes[`${key}`].none_atuo_select,
                 "node_cf": obj.users_notes[`${key}`].node_cf,
-                "proxurl_not_base64": obj.users_notes[`${key}`].proxurl_not_base64,
                 "addr": obj.users_notes[`${key}`].addr,
                 "port": obj.users_notes[`${key}`].port,
                 "ports": obj.users_notes[`${key}`].ports,
@@ -762,6 +762,8 @@ export function originConfig() {
                     "users": [
                         {
                             "name": "xxxxxx",
+                            "proxurl_not_base64":"false",
+                            "none": null,
                             "sub_url": "/mZJQA5tJtIXaf3aB/xxxxxx."
                         }
                     ],

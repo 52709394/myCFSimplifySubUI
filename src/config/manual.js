@@ -4,6 +4,12 @@ import { getIpsStr, heightIps } from "./ip_list.js"
 
 export async function manualConfig(env) {
 
+    if (!Array.isArray(SubConfig.users_arr)) {
+        const configStr = JSON.stringify(SubConfig)
+        await env.sub_data.put("subCofig", configStr)
+        return
+    }
+
     const usersOdj = { "users": [] }
 
     let isCF = false
@@ -47,7 +53,7 @@ export async function manualConfig(env) {
         const serviceName = user.serviceName
         const sni = user.sni
         const fp = user.fp
-        let isInsecure = false
+        let isInsecure = "false"
         const pbk = user.pbk
         const sid = user.sid
         const none = user.none
@@ -72,14 +78,8 @@ export async function manualConfig(env) {
             }
         }
 
-
-
         if (user.isInsecure === "true") {
-            isInsecure = true
-        }
-
-        if (user.isInsecure === "true") {
-            isInsecure = true
+            isInsecure = "true"
         }
 
 
