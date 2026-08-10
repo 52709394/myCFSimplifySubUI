@@ -22,16 +22,16 @@ export function getXrayData(config, modus) {
                 continue
             }
 
-            const tag = inbound.tag ?? ""
+            const tag = inbound.tag
             let isNotes = false
             let users = []
             const newUsers = []
             let autoSelect = "false"
             let isCF = "false"
             let addr = null
-            let port = inbound.port ?? null
+            let port = inbound.port
             let ports
-            let network = inbound.streamSettings?.network ?? null;
+            let network = inbound.streamSettings?.network
             if (!network) {
                 continue
             }
@@ -45,7 +45,9 @@ export function getXrayData(config, modus) {
             let back = ""
             let nodes = []
 
-            if (tag != "" && modus === "renew") {
+            if (tag != "" &&
+                tag != null &&
+                modus === "renew") {
                 isNotes = true
 
                 if (typeof SubConfig.users_notes != 'object') {
@@ -79,8 +81,7 @@ export function getXrayData(config, modus) {
                     }
 
                 } else if (network === "raw" ||
-                    network === "tcp"
-                ) {
+                    network === "tcp") {
                     model += "+tcp"
                 } else {
                     continue

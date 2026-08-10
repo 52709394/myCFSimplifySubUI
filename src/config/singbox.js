@@ -22,7 +22,7 @@ export function getSingBoxData(config, modus) {
                 continue
             }
 
-            const tag = inbound.tag ?? ""
+            const tag = inbound.tag
             let isNotes = false
             let users = []
             const newUsers = []
@@ -43,7 +43,9 @@ export function getSingBoxData(config, modus) {
             let nodes = []
 
 
-            if (tag != "" && modus === "renew") {
+            if (tag != "" &&
+                tag != null &&
+                modus === "renew") {
                 isNotes = true
 
                 if (typeof SubConfig.users_notes != 'object') {
