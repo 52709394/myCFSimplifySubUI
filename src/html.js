@@ -45,7 +45,7 @@ export function subUrl(url) {
 
 export function layoutText(title, text) {
 	let body
-	if (title == "Welcome to nginx!") {
+	if (title === "Welcome to nginx!") {
 		body = `
 		body {
 			width: 35em;

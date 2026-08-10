@@ -22,7 +22,7 @@ export async function _3xuiConfig(env) {
         let ips = []
 
 
-        if (SubConfig.node_cf == "true") {
+        if (SubConfig.node_cf === "true") {
             let cached = await env.sub_data.get("ipData");
 
             if (!cached) {
@@ -58,21 +58,21 @@ export async function _3xuiConfig(env) {
             let isInsecure = "false"
             let security
             let front = ""
-            let Back = ""
+            let back = ""
 
 
-            if (SubConfig.backup?.enable == "true") {
+            if (SubConfig.backup?.enable === "true") {
                 enable = false
             }
 
-            if (network == "ws" ||
-                network == "httpupgrade" ||
-                network == "xhttp"
+            if (network === "ws" ||
+                network === "httpupgrade" ||
+                network === "xhttp"
             ) {
                 path = obj.streamSettings[`${settingKey}`]?.path ?? "";
-            } else if (network == "grpc") {
+            } else if (network === "grpc") {
                 serviceName = obj.streamSettings[`${settingKey}`]?.serviceName ?? "";
-            } else if (network == "raw") {
+            } else if (network === "raw") {
                 network = "tcp"
             }
 
@@ -88,8 +88,8 @@ export async function _3xuiConfig(env) {
 
             security = obj.streamSettings.security
 
-            if (security == "none" &&
-                SubConfig.all_user?.security == "tls"
+            if (security === "none" &&
+                SubConfig.all_user?.security === "tls"
             ) {
                 security = "tls"
             }
@@ -97,7 +97,7 @@ export async function _3xuiConfig(env) {
             let sni, pbk, sid
             let fp
 
-            if (security == "reality") {
+            if (security === "reality") {
                 sni = obj.streamSettings.realitySettings.serverNames[0]
                 pbk = obj.streamSettings.realitySettings.settings.publicKey
                 sid = obj.streamSettings.realitySettings.shortIds[0]
@@ -106,7 +106,7 @@ export async function _3xuiConfig(env) {
                     fp = obj.streamSettings.realitySettings.settings.fingerprint
                 }
 
-            } else if (security == "tls" &&
+            } else if (security === "tls" &&
                 SubConfig.all_user?.security != "tls"
             ) {
                 if (obj.streamSettings.tlsSettings.serverName != "" &&
@@ -124,12 +124,12 @@ export async function _3xuiConfig(env) {
                 nodes = SubConfig.all_user.nodes
             }
 
-            if (SubConfig.none_atuo_select == "true") {
+            if (SubConfig.none_atuo_select === "true") {
                 autoSelect = true
             }
 
 
-            if (obj.protocol == "hysteria") {
+            if (obj.protocol === "hysteria") {
                 if (SubConfig.all_user?.ports) {
                     ports = SubConfig.all_user.ports
                 }
@@ -140,7 +140,7 @@ export async function _3xuiConfig(env) {
             }
 
             if (SubConfig.none_back != null) {
-                Back = SubConfig.none_back
+                back = SubConfig.none_back
             }
 
 
@@ -167,7 +167,7 @@ export async function _3xuiConfig(env) {
 
                 const down = formatBytes(stats[`${user.email}`]?.down)
 
-                if (SubConfig.users_obj[`${user.email}`]?.proxurl_not_base64 == "true") {
+                if (SubConfig.users_obj[`${user.email}`]?.proxurl_not_base64 === "true") {
                     isBase64 = false
                 }
 
@@ -183,13 +183,13 @@ export async function _3xuiConfig(env) {
                     port = SubConfig.all_user.port
                 }
 
-                if (security == "none" &&
-                    SubConfig.users_obj[`${user.email}`]?.security == "tls"
+                if (security === "none" &&
+                    SubConfig.users_obj[`${user.email}`]?.security === "tls"
                 ) {
                     security = "tls"
                 }
 
-                if (security == "tls") {
+                if (security === "tls") {
                     if (SubConfig.users_obj[`${user.email}`]?.sni != "" &&
                         SubConfig.users_obj[`${user.email}`]?.sni != null
                     ) {
@@ -197,9 +197,9 @@ export async function _3xuiConfig(env) {
                     }
                 }
 
-                if (obj.protocol == "vmess" ||
-                    obj.protocol == "vless" ||
-                    obj.protocol == "trojan"
+                if (obj.protocol === "vmess" ||
+                    obj.protocol === "vless" ||
+                    obj.protocol === "trojan"
                 ) {
                     model = `${obj.protocol}\+${network}\+${security}`
                 } else {
@@ -207,8 +207,8 @@ export async function _3xuiConfig(env) {
                 }
 
 
-                if (obj.protocol == "vmess" ||
-                    obj.protocol == "vless"
+                if (obj.protocol === "vmess" ||
+                    obj.protocol === "vless"
                 ) {
                     uuid = user.id
                 } else {
@@ -216,8 +216,8 @@ export async function _3xuiConfig(env) {
                 }
 
 
-                if (SubConfig.users_obj[`${user.email}`]?.enable == "false" ||
-                    SubConfig.backup?.enable == "true") {
+                if (SubConfig.users_obj[`${user.email}`]?.enable === "false" ||
+                    SubConfig.backup?.enable === "true") {
                     enable = false
                 }
 
@@ -232,11 +232,11 @@ export async function _3xuiConfig(env) {
                     nodes = []
                 }
 
-                if (SubConfig.users_obj[`${user.email}`]?.none_atuo_select == "true" &&
+                if (SubConfig.users_obj[`${user.email}`]?.none_atuo_select === "true" &&
                     nodes.length
                 ) {
                     autoSelect = true
-                } else if (SubConfig.none_atuo_select == "true" &&
+                } else if (SubConfig.none_atuo_select === "true" &&
                     SubConfig.users_obj[`${user.email}`]?.none_atuo_select != "true" &&
                     nodes.length
                 ) {
@@ -246,7 +246,7 @@ export async function _3xuiConfig(env) {
                 }
 
 
-                if (obj.protocol == "hysteria") {
+                if (obj.protocol === "hysteria") {
                     if (SubConfig.users_obj[`${user.email}`]?.ports != null) {
                         ports = SubConfig.users_obj[`${user.email}`].ports
                     } else if (SubConfig.all_user?.ports != null) {
@@ -254,10 +254,10 @@ export async function _3xuiConfig(env) {
                     }
                 }
 
-                if (SubConfig.users_obj[`${user.email}`]?.isInsecure == "true") {
-                    isInsecure = SubConfig.users_obj[`${user.email}`].isInsecure
-                } else if (SubConfig.all_user?.isInsecure == "true") {
-                    isInsecure = SubConfig.all_user.isInsecure
+                if (SubConfig.users_obj[`${user.email}`]?.isInsecure === "true") {
+                    isInsecure = "true"
+                } else if (SubConfig.all_user?.isInsecure === "true") {
+                    isInsecure = "true"
                 } else {
                     isInsecure = "false"
                 }
@@ -274,15 +274,8 @@ export async function _3xuiConfig(env) {
                 //     back = SubConfig.none_back;
                 // }
 
-                if (SubConfig.none_front != null) {
-                    front = SubConfig.none_front
-                }
 
-                if (SubConfig.none_back != null) {
-                    back = SubConfig.none_back;
-                }
-
-                if (typeof SubConfig.users_obj[`${user.email}`] == 'object' &&
+                if (typeof SubConfig.users_obj[`${user.email}`] === 'object' &&
                     SubConfig.users_obj[`${user.email}`] != null
                 ) {
                     newUsers[`${user.email}`] = SubConfig.users_obj[`${user.email}`]
@@ -302,7 +295,7 @@ export async function _3xuiConfig(env) {
                     }
                 }
 
-                if (security == "reality") {
+                if (security === "reality") {
 
                     proxy = {
                         "name": user.email,
@@ -323,7 +316,7 @@ export async function _3xuiConfig(env) {
                         "pbk": pbk,
                         "sid": sid,
                         "fp": fp,
-                        "none": `${front}${user.email}${Back}`,
+                        "none": `${front}${user.email}${back}`,
                         "nodes": nodes
                     }
 
@@ -333,7 +326,7 @@ export async function _3xuiConfig(env) {
 
                     if (isCF &&
                         model.endsWith("ws+tls") &&
-                        SubConfig.users_obj[`${user.email}`]?.node_cf == "true"
+                        SubConfig.users_obj[`${user.email}`]?.node_cf === "true"
                     ) {
                         l = "-0"
                         autoSelect = true
@@ -347,7 +340,7 @@ export async function _3xuiConfig(env) {
                                     "addr": ips[i].addr,
                                     "port": ips[i].port,
                                     "sni": sni,
-                                    "none": `${front}${user.email}${Back}-${i}`
+                                    "none": `${front}${user.email}${back}-${i}`
                                 })
                             }
                         }
@@ -373,7 +366,7 @@ export async function _3xuiConfig(env) {
                         "sni": sni,
                         "isInsecure": isInsecure,
                         "fp": fp,
-                        "none": `${front}${user.email}${Back}${l}`,
+                        "none": `${front}${user.email}${back}${l}`,
                         "nodes": nodes
                     }
                 }

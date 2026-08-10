@@ -29,7 +29,7 @@ export async function getIpsStr(env) {
   
     for (const ip of str) {
   
-      if (ip == "") {
+      if (ip === "") {
         continue
       }
   

@@ -10,7 +10,7 @@ export async function manualConfig(env) {
     let ips = []
 
 
-    if (SubConfig.node_cf == "true") {
+    if (SubConfig.node_cf === "true") {
         let cached = await env.sub_data.get("ipData");
 
         if (!cached) {
@@ -55,17 +55,17 @@ export async function manualConfig(env) {
 
 
 
-        if (user.enable == "false") {
+        if (user.enable === "false") {
             enable = false
         }
 
-        if (user.proxurl_not_base64 == "true") {
+        if (user.proxurl_not_base64 === "true") {
             isBase64 = false
         }
 
         if (Array.isArray(nodes)) {
-            if ((user.none_atuo_select == "true" ||
-                SubConfig.none_atuo_select == "true") &&
+            if ((user.none_atuo_select === "true" ||
+                SubConfig.none_atuo_select === "true") &&
                 nodes.length
             ) {
                 autoSelect = true
@@ -74,11 +74,11 @@ export async function manualConfig(env) {
 
 
 
-        if (user.isInsecure == "true") {
+        if (user.isInsecure === "true") {
             isInsecure = true
         }
 
-        if (user.isInsecure == "true") {
+        if (user.isInsecure === "true") {
             isInsecure = true
         }
 
@@ -87,7 +87,7 @@ export async function manualConfig(env) {
 
         if (isCF &&
             model.endsWith("ws+tls") &&
-            user.node_cf == "true"
+            user.node_cf === "true"
         ) {
             l = "-0"
             autoSelect = true

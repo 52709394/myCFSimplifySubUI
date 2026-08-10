@@ -27,7 +27,8 @@ export function userSubSet() {
     renewSrt += `点击 "是" 继续\\n\\n`
     renewSrt += `(原来配置,自动备份到粘贴板)"` + "`"
 
-    const config = JSON.stringify(SubConfig, null, 4)
+    const config =  JSON.stringify(SubConfig, null, 4)
+    const d = "`"
 
     output = `
         <nav class="tutorial-nav">
@@ -63,22 +64,22 @@ export function userSubSet() {
     <script>
 
     let Url = document.getElementById("mode").value;
-    let Config = ${config};
+    let Config = ${d}${config}${d};
     
     function selectMode(mode) {
         
         const jsonId = document.getElementById("json");
 
-        if (Url == mode) {
+        if (Url === mode) {
             return;
         }
 
-        if ( Url == "/setrenew" && 
+        if ( Url === "/setrenew" && 
             mode != "/setrenew") {
             Config = jsonId.value;
             document.getElementById("init").style.visibility = 'hidden';
             jsonId.value = "";
-        } else if (mode == "/setrenew" ){
+        } else if (mode === "/setrenew" ){
             jsonId.value = Config; 
             document.getElementById("init").style.visibility = 'visible';
         } else {
@@ -117,7 +118,9 @@ export function userSubSet() {
         send.disabled = true;
         send.innerText = '处理中';
 
-        copyContent(${config})
+        if ( Url === "/setrenew") {
+          copyContent(${d}${config}${d})
+        }
 
         try{
             JSON.parse(text);
@@ -230,7 +233,7 @@ export function renewConfig(obj) {
     let usersObj, usersArr
     let usersNotes
 
-    if (typeof obj.users_obj == 'object' && obj.users_obj != null) {
+    if (typeof obj.users_obj === 'object' && obj.users_obj != null) {
         const users_obj = {}
         let isObj = false
 
@@ -326,7 +329,7 @@ export function renewConfig(obj) {
 
             for (const user of obj.users_arr) {
 
-                if (user.name == null || user.name == "") {
+                if (user.name == null || user.name === "") {
                     return `配置错误:\n` +
                         `name(${user.name}) 不能为空!`
                 }
@@ -340,7 +343,7 @@ export function renewConfig(obj) {
                         `(格式: /xxxxxx.../${user.name}.)`;
                 }
 
-                if (user.none == null || user.none == "") {
+                if (user.none == null || user.none === "") {
                     return `配置错误:\n` +
                         ` none(${user.name}的none字段) 不能为空! \n`;
                 }
@@ -390,7 +393,7 @@ export function renewConfig(obj) {
             }
 
 
-            if (new Set(subUrlArr).size !== subUrlArr.length) {
+            if (new Set(subUrlArr).size != subUrlArr.length) {
                 return `配置错误:\n` +
                     `users_arr.sub_url 字段 users_arr.sub_url 不是唯一性 \n` +
                     `(请检查 所有 users_arr.sub_url 字段)`;
@@ -400,7 +403,7 @@ export function renewConfig(obj) {
         }
     }
 
-    if (typeof obj.users_notes == 'object' && obj.users_notes != null) {
+    if (typeof obj.users_notes === 'object' && obj.users_notes != null) {
 
         const users_notes = {}
 

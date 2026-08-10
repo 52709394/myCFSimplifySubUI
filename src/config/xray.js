@@ -17,7 +17,7 @@ export function getXrayData(config, modus) {
             const protocol = inbound.protocol
 
             if (protocol == null ||
-                protocol == ""
+                protocol === ""
             ) {
                 continue
             }
@@ -41,9 +41,11 @@ export function getXrayData(config, modus) {
             let sni
             let isInsecure = "false"
             let pbk, sid
+            let front = ""
+            let back = ""
             let nodes = []
 
-            if (tag != "" && modus == "renew") {
+            if (tag != "" && modus === "renew") {
                 isNotes = true
 
                 if (typeof SubConfig.users_notes != 'object') {
@@ -51,19 +53,19 @@ export function getXrayData(config, modus) {
                 }
             }
 
-            if (SubConfig.proxy_model == "xray" && SubConfig.proxy_url != "") {
+            if (SubConfig.proxy_model === "xray" && SubConfig.proxy_url != "") {
                 addr = getHost(SubConfig.proxy_url)
             }
 
 
-            if (protocol == "vmess" ||
-                protocol == "vless" ||
-                protocol == "trojan"
+            if (protocol === "vmess" ||
+                protocol === "vless" ||
+                protocol === "trojan"
             ) {
-                if (network == "ws" ||
-                    network == "httpupgrade" ||
-                    network == "xhttp" ||
-                    network == "grpc"
+                if (network === "ws" ||
+                    network === "httpupgrade" ||
+                    network === "xhttp" ||
+                    network === "grpc"
                 ) {
 
                     model += `+${network}`
@@ -76,15 +78,15 @@ export function getXrayData(config, modus) {
                         serviceName = inbound.streamSettings[`${settingKey}`].serviceName
                     }
 
-                } else if (network == "raw" ||
-                    network == "tcp"
+                } else if (network === "raw" ||
+                    network === "tcp"
                 ) {
                     model += "+tcp"
                 } else {
                     continue
                 }
 
-                if (protocol == "vless" && inbound.streamSettings.security == "reality") {
+                if (protocol === "vless" && inbound.streamSettings.security === "reality") {
                     model += "+reality"
                     sni = inbound.streamSettings.realitySettings.serverNames[0]
                     try {
@@ -94,19 +96,19 @@ export function getXrayData(config, modus) {
                     }
                     sid = inbound.streamSettings.realitySettings.shortIds[0]
 
-                } else if (inbound.streamSettings.security == "tls") {
+                } else if (inbound.streamSettings.security === "tls") {
                     model += "+tls"
                     if (inbound.streamSettings.tlsSettings.serverName) {
                         sni = inbound.streamSettings.tlsSettings.serverName
                     }
-                } else if (typeof SubConfig.users_notes == 'object') {
-                    if (SubConfig.users_notes[`${tag}`]?.security == "tls") {
+                } else if (typeof SubConfig.users_notes === 'object') {
+                    if (SubConfig.users_notes[`${tag}`]?.security === "tls") {
                         model += "+tls"
                     } else {
                         model += "+none"
                     }
-                } else if (SubConfig.all_user?.manual_write == "true" &&
-                    SubConfig.all_user?.security == "tls") {
+                } else if (SubConfig.all_user?.manual_write === "true" &&
+                    SubConfig.all_user?.security === "tls") {
                     model += "+tls"
                 } else {
                     model += "+none"
@@ -116,18 +118,18 @@ export function getXrayData(config, modus) {
                 continue
             }
 
-            if (SubConfig.all_user?.manual_write == "true") {
+            if (SubConfig.all_user?.manual_write === "true") {
 
-                if (SubConfig.none_atuo_select == "true") {
+                if (SubConfig.none_atuo_select === "true") {
                     autoSelect = "true"
                 }
 
                 // 用户也同时开启
-                // if (SubConfig.node_cf == "true") {
+                // if (SubConfig.node_cf === "true") {
                 //     isCF = "true"
                 // }
 
-                if (SubConfig.all_user.isInsecure == "true") {
+                if (SubConfig.all_user.isInsecure === "true") {
                     isInsecure = "true"
                 }
 
@@ -150,13 +152,13 @@ export function getXrayData(config, modus) {
 
 
             if (isNotes &&
-                typeof SubConfig.users_notes[`${tag}`] == 'object') {
+                typeof SubConfig.users_notes[`${tag}`] === 'object') {
 
-                if (SubConfig.users_notes[`${tag}`].none_atuo_select == "true") {
+                if (SubConfig.users_notes[`${tag}`].none_atuo_select === "true") {
                     autoSelect = "true"
                 }
 
-                if (SubConfig.users_notes[`${tag}`].node_cf == "true") {
+                if (SubConfig.users_notes[`${tag}`].node_cf === "true") {
                     isCF = "true"
                 }
 
@@ -173,7 +175,7 @@ export function getXrayData(config, modus) {
                     sni = SubConfig.users_notes[`${tag}`].sni
                 }
 
-                if (SubConfig.users_notes[`${tag}`].isInsecure == "true") {
+                if (SubConfig.users_notes[`${tag}`].isInsecure === "true") {
                     isInsecure = "true"
                 }
 
@@ -200,6 +202,14 @@ export function getXrayData(config, modus) {
             }
 
 
+            if (SubConfig.none_front != null) {
+                front = SubConfig.none_front
+            }
+
+            if (SubConfig.none_back != null) {
+                back = SubConfig.none_back
+            }
+
             if (!Array.isArray(inbound.settings.clients)) {
                 continue
             }
@@ -212,7 +222,7 @@ export function getXrayData(config, modus) {
 
                 sub_url = `/${getRandomStr(16)}/${name}\.`
 
-                if (name == "" ||
+                if (name === "" ||
                     name == null
                 ) {
                     name = getRandomStr(6)
@@ -220,7 +230,7 @@ export function getXrayData(config, modus) {
                 } else if (isNotes) {
 
                     for (const user of users) {
-                        if (user.name == name) {
+                        if (user.name === name) {
                             const re = new RegExp("^\/[a-zA-Z0-9\/]{6,}\/" + user.name + "\.$");
                             if (re.test(user.sub_url)) {
 
@@ -245,17 +255,6 @@ export function getXrayData(config, modus) {
                 }
 
 
-                let front = ""
-                let Back = ""
-
-                if (SubConfig.none_front != null) {
-                    front = SubConfig.none_front
-                }
-
-                if (SubConfig.none_back != null) {
-                    Back = SubConfig.none_back
-                }
-
                 arr.push(
                     {
                         "name": name,
@@ -279,7 +278,7 @@ export function getXrayData(config, modus) {
                         "sid": sid,
                         "isInsecure": isInsecure,
                         "fp": null,
-                        "none": `${front}${name}${Back}`,
+                        "none": `${front}${name}${back}`,
                         "nodes": nodes
                     }
                 )
@@ -304,8 +303,8 @@ export function getXrayData(config, modus) {
         json.info += e.message
     }
 
-    if (arr.length == 0 &&
-        json.info == ""
+    if (arr.length === 0 &&
+        json.info === ""
     ) {
         json.info = `"xray json"错误:\n无法提取有效数据`
     }

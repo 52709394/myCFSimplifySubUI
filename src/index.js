@@ -49,7 +49,7 @@ export default {
 
 		if (url.pathname.includes(SubConfig.web_url)) {
 
-			if (url.pathname == SubConfig.web_url) {
+			if (url.pathname === SubConfig.web_url) {
 				url.pathname = SubConfig.web_url + '/home.html'
 				return Response.redirect(url.toString(), 301)
 			}
@@ -83,26 +83,26 @@ export default {
 				backup['json'] = SubConfig.backup.json
 				backup['yaml'] = SubConfig.backup.yaml
 
-				if (url.pathname == user.sub_url + "home") {
+				if (url.pathname === user.sub_url + "home") {
 					return userHomeUrl(request, user.name, user.sub_url, user.up, user.down);
-				} else if (url.pathname == user.sub_url + "logout") {
+				} else if (url.pathname === user.sub_url + "logout") {
 					return userHomeUrl(request, user.name, user.sub_url, user.up, user.down);
-				} else if (url.pathname == user.sub_url + "html") {
+				} else if (url.pathname === user.sub_url + "html") {
 					return proxy.htmlProxy(user, backup);
-				} else if (url.pathname == user.sub_url + "json") {
+				} else if (url.pathname === user.sub_url + "json") {
 					return proxy.jsonProxy(user, backup);
-				} else if (url.pathname == user.sub_url + "yaml") {
+				} else if (url.pathname === user.sub_url + "yaml") {
 					return proxy.yamlProxy(user, backup);
-				} else if (url.pathname == user.sub_url + "HomeQr") {
+				} else if (url.pathname === user.sub_url + "HomeQr") {
 					const text = `${url.origin}${user.sub_url}home`;
 					return generateQRCode({ text })
-				} else if (url.pathname == user.sub_url + "Qr") {
+				} else if (url.pathname === user.sub_url + "Qr") {
 					const text = `${url.origin}${user.sub_url}html\#${user.name}`;
 					return generateQRCode({ text })
-				} else if (url.pathname == user.sub_url + "SbQr") {
+				} else if (url.pathname === user.sub_url + "SbQr") {
 					const text = `sing-box://import-remote-profile\?url=${url.origin}${user.sub_url}json\#${user.name}`
 					return generateQRCode({ text })
-				} else if (url.pathname == user.sub_url + "CMQr") {
+				} else if (url.pathname === user.sub_url + "CMQr") {
 					const text = `${url.origin}${user.sub_url}yaml`;
 					return generateQRCode({ text })
 				} else {
@@ -118,16 +118,16 @@ export default {
 
 	async scheduled(_, env) {
 
-		if (SubConfig.node_cf == "true") {
+		if (SubConfig.node_cf === "true") {
 			await getIpsStr(env)
 		}
 
-		if (SubConfig.proxy_model == "3x-ui" ||
-			SubConfig.proxy_model == "xray" ||
-			SubConfig.proxy_model == "sing-box"
+		if (SubConfig.proxy_model === "3x-ui" ||
+			SubConfig.proxy_model === "xray" ||
+			SubConfig.proxy_model === "sing-box"
 		) {
 			await getUsersData(env)
-			if (SubConfig.proxy_model == "3x-ui") {
+			if (SubConfig.proxy_model === "3x-ui") {
 				await updateGeofile()
 			}
 		}
@@ -149,12 +149,12 @@ async function userSubUrl(request, env) {
 	if (!cookie.includes(`${COOKIE_NAME}=${COOKIE_VALUE}`)) {
 
 		// 登录处理
-		if (url.pathname == SubConfig.web_url + "/login" && request.method == "POST") {
+		if (url.pathname === SubConfig.web_url + "/login" && request.method === "POST") {
 			const formData = await request.formData();
 			const username = formData.get("username");
 			const password = formData.get("password");
 
-			if (username == USERNAME && password == PASSWORD) {
+			if (username === USERNAME && password === PASSWORD) {
 				// 登录成功，设置 Cookie
 				return new Response(null, {
 					status: 302,
@@ -172,9 +172,9 @@ async function userSubUrl(request, env) {
 		}
 
 		// 未登录，展示登录页面
-		if (url.pathname == SubConfig.web_url + "/login" ||
-			url.pathname == SubConfig.web_url + "/home.html" ||
-			url.pathname == SubConfig.web_url + "/set.html"
+		if (url.pathname === SubConfig.web_url + "/login" ||
+			url.pathname === SubConfig.web_url + "/home.html" ||
+			url.pathname === SubConfig.web_url + "/set.html"
 		) {
 
 			const text = loginText(SubConfig.web_url + "/login")
@@ -189,31 +189,31 @@ async function userSubUrl(request, env) {
 
 	};
 
-	if (url.pathname == SubConfig.web_url + "/home.html") {
+	if (url.pathname === SubConfig.web_url + "/home.html") {
 
 		let output = await userSubHome(url, env)
 		return subUrl(output);
 	};
 
 
-	if (url.pathname == SubConfig.web_url + "/set.html") {
+	if (url.pathname === SubConfig.web_url + "/set.html") {
 
 		const output = userSubSet()
 
 		return subUrl(output);
 	};
 
-	if (url.pathname == SubConfig.web_url + "/update" ||
-		url.pathname == SubConfig.web_url + "/setinit" ||
-		url.pathname == SubConfig.web_url + "/renew") {
+	if (url.pathname === SubConfig.web_url + "/update" ||
+		url.pathname === SubConfig.web_url + "/setinit" ||
+		url.pathname === SubConfig.web_url + "/renew") {
 
 		let _url = ""
 		let str = ""
 
-		if (url.pathname == SubConfig.web_url + "/update") {
+		if (url.pathname === SubConfig.web_url + "/update") {
 			_url = SubConfig.web_url + "/home.html"
 			str = "用户数据更新成功"
-		} else if (url.pathname == SubConfig.web_url + "/setinit") {
+		} else if (url.pathname === SubConfig.web_url + "/setinit") {
 			initConfig()
 			await env.sub_data.put(
 				"subCofig",
@@ -299,7 +299,7 @@ async function userSubUrl(request, env) {
 		}
 
 
-		if (result == "") {
+		if (result === "") {
 			result = await getUsersData(env)
 		}
 
@@ -331,7 +331,7 @@ async function userSubUrl(request, env) {
 	}
 
 	// 登出逻辑
-	if (url.pathname == SubConfig.web_url + "/logout") {
+	if (url.pathname === SubConfig.web_url + "/logout") {
 		return new Response(null, {
 			status: 302,
 			headers: {
@@ -362,7 +362,7 @@ function setUsersArr(func, obj, model = "renew") {
 		newConfig.users_arr = []
 	}
 
-	if (model == "renew") {
+	if (model === "renew") {
 		newConfig.users_arr = resultObj.users_arr
 	} else {
 		newConfig.users_arr = [...newConfig.users_arr, ...resultObj.users_arr]
@@ -513,7 +513,7 @@ async function userSubHome(url, env) {
 
 				// 点击弹窗外部区域关闭弹窗
 				window.onclick = function (event) {
-					if (event.target == modal) {
+					if (event.target === modal) {
 						modal.style.display = "none";
 					}
 				}
@@ -538,12 +538,12 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 		(url.pathname != userUrl + "logout")) {
 
 		// 登录处理
-		if (url.pathname == userUrl + "home" && request.method == "POST") {
+		if (url.pathname === userUrl + "home" && request.method === "POST") {
 			const formData = await request.formData();
 			const username = formData.get("username");
 			const password = formData.get("password");
 
-			if (username == USERNAME && password == PASSWORD) {
+			if (username === USERNAME && password === PASSWORD) {
 				// 登录成功，设置 Cookie
 				return new Response(null, {
 					status: 302,
@@ -561,7 +561,7 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 		}
 
 		// 未登录，展示登录页面
-		if (url.pathname == userUrl + "home") {
+		if (url.pathname === userUrl + "home") {
 
 			const text = loginText(userUrl + "home")
 
@@ -577,7 +577,7 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 	}
 
 
-	if (url.pathname == userUrl + "home") {
+	if (url.pathname === userUrl + "home") {
 
 		let output = "";
 		output += `
@@ -675,7 +675,7 @@ async function userHomeUrl(request, name, userUrl, up, down) {
 	};
 
 	// 登出逻辑
-	if (url.pathname == userUrl + "logout") {
+	if (url.pathname === userUrl + "logout") {
 		return new Response(null, {
 			status: 302,
 			headers: {

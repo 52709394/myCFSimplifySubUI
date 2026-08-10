@@ -97,16 +97,16 @@ export async function htmlProxy(node, backup) {
                 return nginx()
         }
 
-    } else if (node.model == "hysteria") {
+    } else if (node.model === "hysteria") {
         const { html } = await import("./hysteria2");
         proxyFun = html
-    } else if (node.model == "naive") {
+    } else if (node.model === "naive") {
         const { html } = await import("./naive.js");
         proxyFun = html
-    } else if (node.model == "anytls") {
+    } else if (node.model === "anytls") {
         const { html } = await import("./anytls.js");
         proxyFun = html
-    } else if (node.model == "tuic") {
+    } else if (node.model === "tuic") {
         const { html } = await import("./tuic.js");
         proxyFun = html
     } else if (node.model.startsWith("cf")) {
@@ -136,7 +136,7 @@ export async function htmlProxy(node, backup) {
 
     for (const n of node.nodes) {
 
-        if (n.addr == null || n.addr == "") {
+        if (n.addr == null || n.addr === "") {
             continue;
         }
 
@@ -245,19 +245,19 @@ export async function jsonProxy(node, backup) {
                 return nginx()
         }
 
-    } else if (node.model == "hysteria") {
+    } else if (node.model === "hysteria") {
         const { json } = await import("./hysteria2");
         proxyFun = json
-    } else if (node.model == "naive") {
+    } else if (node.model === "naive") {
         const { json } = await import("./naive.js");
         proxyFun = json
-    } else if (node.model == "snell") {
+    } else if (node.model === "snell") {
         const { json } = await import("./snell.js");
         proxyFun = json
-    } else if (node.model == "anytls") {
+    } else if (node.model === "anytls") {
         const { json } = await import("./anytls.js");
         proxyFun = json
-    } else if (node.model == "tuic") {
+    } else if (node.model === "tuic") {
         const { json } = await import("./tuic.js");
         proxyFun = json
     } else if (node.model.startsWith("cf")) {
@@ -314,7 +314,7 @@ export async function jsonProxy(node, backup) {
 
     for (const n of node.nodes) {
 
-        if (n.addr == null || n.addr == "") {
+        if (n.addr == null || n.addr === "") {
             continue;
         }
 
@@ -433,16 +433,16 @@ export async function yamlProxy(node, backup) {
                 return nginx()
         }
 
-    } else if (node.model == "hysteria") {
+    } else if (node.model === "hysteria") {
         const { yaml } = await import("./hysteria2");
         proxyFun = yaml
-    } else if (node.model == "snell") {
+    } else if (node.model === "snell") {
         const { yaml } = await import("./snell.js");
         proxyFun = yaml
-    } else if (node.model == "anytls") {
+    } else if (node.model === "anytls") {
         const { yaml } = await import("./anytls.js");
         proxyFun = yaml
-    } else if (node.model == "tuic") {
+    } else if (node.model === "tuic") {
         const { yaml } = await import("./tuic.js");
         proxyFun = yaml
     } else if (node.model.startsWith("cf")) {
@@ -500,7 +500,7 @@ export async function yamlProxy(node, backup) {
 
     for (const n of node.nodes) {
 
-        if (n.addr == null || n.addr == "") {
+        if (n.addr == null || n.addr === "") {
             continue;
         }
 

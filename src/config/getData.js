@@ -6,10 +6,10 @@ import { getSingBoxData } from './singbox.js';
 
 export async function getUsersData(env) {
 
-	if (SubConfig.proxy_model == "3x-ui") {
+	if (SubConfig.proxy_model === "3x-ui") {
 		return await _3xuiConfig(env)
-	} else if (SubConfig.proxy_model == "xray" ||
-		SubConfig.proxy_model == "sing-box") {
+	} else if (SubConfig.proxy_model === "xray" ||
+		SubConfig.proxy_model === "sing-box") {
 
 		const origData = await fetchData()
 
@@ -19,7 +19,7 @@ export async function getUsersData(env) {
 
 		let resultObj
 
-		if (SubConfig.proxy_model == "xray") {
+		if (SubConfig.proxy_model === "xray") {
 			resultObj = getXrayData(origData.config, "renew")
 		} else {
 			resultObj = getSingBoxData(origData.config, "renew")
