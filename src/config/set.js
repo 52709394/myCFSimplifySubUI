@@ -215,19 +215,19 @@ export function renewConfig(obj) {
     re = /^.{3,16}$/;
     if (!re.test(obj.user_password) ||
         obj.user_password == null) {
-        obj.user_password = "52709394"
+        obj["user_password"] = "52709394"
     }
 
     re = /^.{3,16}$/;
     if (!re.test(obj.cookie_name) ||
         obj.cookie_name == null) {
-        obj.cookie_name = "52709394"
+        obj["cookie_name"] = "52709394"
     }
 
     re = /^.{3,16}$/;
     if (!re.test(obj.cookie_value) ||
         obj.cookie_value == null) {
-        obj.cookie_value = "52709394"
+        obj["cookie_value"] = "52709394"
     }
 
     let usersObj, usersArr
