@@ -488,6 +488,7 @@ export function renewConfig(obj) {
         "web_password": obj.web_password,
         "user_password": obj.user_password,
         "cookie_name": obj.cookie_name,
+        "cookie_value":obj.cookie_value,
         "proxy_model": obj.proxy_model,
         "proxy_url": obj.proxy_url,
         "proxy_key": obj.proxy_key,
