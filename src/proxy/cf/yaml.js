@@ -23,7 +23,7 @@ export function vmessWsTls(proxy) {
         Host: ${proxy.sni}
     tls: true
     udp: true
-    servername: ${proxy.sni}
+    sni: ${proxy.sni}
     client-fingerprint: ${fp} 
     `
 }
@@ -49,7 +49,7 @@ export function vlessWSTls(proxy) {
         Host: ${proxy.sni}
     tls: true
     udp: true
-    servername: ${proxy.sni}
+    sni: ${proxy.sni}
     client-fingerprint: ${fp} 
     `    
 
@@ -78,7 +78,7 @@ export function trojanWSTls(proxy) {
         Host: ${proxy.sni}
     tls: true
     udp: true
-    servername: ${proxy.sni}
+    sni: ${proxy.sni}
     client-fingerprint: ${fp} 
     `    
 
