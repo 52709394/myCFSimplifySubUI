@@ -44,7 +44,7 @@ export function vlessWSTls(proxy) {
 export function trojanWSTls(proxy) {
 
     const addr = proxy.addr
-    const uuid = proxy.uuid
+    const password = proxy.password
     const port = proxy.port
 
     const path = encodeURIComponent(proxy.path)
@@ -58,7 +58,7 @@ export function trojanWSTls(proxy) {
         fp = proxy.fp
     }
 
-    return `trojan://${uuid}@${addr}:${port}?security=tls&sni=${sni}&fp=${fp}&insecure=0&host=${sni}&type=ws&path=${path}#${none}\n`
+    return `trojan://${password}@${addr}:${port}?security=tls&sni=${sni}&fp=${fp}&insecure=0&host=${sni}&type=ws&path=${path}#${none}\n`
 
 
 
