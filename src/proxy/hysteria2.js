@@ -9,6 +9,7 @@ export function html(proxy) {
     const none = encodeURIComponent(proxy.none)
 
     if (proxy.ports) {
+        proxy.ports = proxy.ports.replaceAll("-", ":")
         ports = encodeURIComponent(proxy.ports)
         ports = `&mport=${ports}`
     }
@@ -34,6 +35,7 @@ export function json(proxy) {
     }
 
     if (proxy.ports) {
+        proxy.ports = proxy.ports.replaceAll("-", ":")
         let str = ""
         if (proxy.ports.includes(",")) {
             for (const p of proxy.ports.split(",")) {

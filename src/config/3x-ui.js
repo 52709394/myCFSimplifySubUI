@@ -21,6 +21,8 @@ export async function _3xuiConfig(env) {
         let isCF = false
         let ips = []
 
+       console.log( JSON.stringify(data));
+       
 
         if (SubConfig.node_cf === "true") {
             let cached = await env.sub_data.get("ipData");
@@ -252,6 +254,7 @@ export async function _3xuiConfig(env) {
                     } else if (SubConfig.all_user?.ports != null) {
                         ports = SubConfig.all_user.ports
                     }
+                    password = user.auth
                 }
 
                 if (SubConfig.users_obj[`${user.email}`]?.isInsecure === "true") {
@@ -323,6 +326,7 @@ export async function _3xuiConfig(env) {
                 } else {
 
                     let l = ""
+                    let _isCF = false
 
                     if (isCF &&
                         model.endsWith("ws+tls") &&
@@ -344,6 +348,7 @@ export async function _3xuiConfig(env) {
                                 })
                             }
                         }
+                        _isCF = isCF
                     }
 
                     proxy = {
@@ -352,7 +357,7 @@ export async function _3xuiConfig(env) {
                         "down": down,
                         "enable": enable,
                         "autoSelect": autoSelect,
-                        "isCF": isCF,
+                        "isCF": _isCF,
                         "isBase64": isBase64,
                         "addr": addr,
                         "port": port,

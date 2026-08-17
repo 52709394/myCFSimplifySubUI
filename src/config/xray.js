@@ -219,8 +219,14 @@ export function getXrayData(config, modus) {
                 let name = user.email;
                 let sub_url
                 const uuid = user.id
-                const password = user.password
+                let password
                 let notBase64 = "false"
+
+                if (protocol === "hysteria") {
+                    password = user.auth
+                }else{
+                    password = user.password
+                }
 
                 sub_url = `/${getRandomStr(16)}/${name}\.`
 
@@ -237,7 +243,7 @@ export function getXrayData(config, modus) {
                             if (user.proxurl_not_base64 === "true") {
                                 notBase64 = "true"
                             }
-                            
+
                             const re = new RegExp("^\/[a-zA-Z0-9\/]{6,}\/" + user.name + "\.$");
                             if (re.test(user.sub_url)) {
                                 if (Array.isArray(user.nodes)) {

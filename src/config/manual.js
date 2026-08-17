@@ -84,6 +84,7 @@ export async function manualConfig(env) {
 
 
         let l = ""
+        let _isCF = false
 
         if (isCF &&
             model.endsWith("ws+tls") &&
@@ -105,6 +106,7 @@ export async function manualConfig(env) {
                     })
                 }
             }
+             _isCF = true
         }
 
 
@@ -115,7 +117,7 @@ export async function manualConfig(env) {
             "down": "暂无",
             "sub_url": sub_url,
             "autoSelect": autoSelect,
-            "isCF": isCF,
+            "isCF": _isCF,
             "isBase64": isBase64,
             "addr": addr,
             "port": port,

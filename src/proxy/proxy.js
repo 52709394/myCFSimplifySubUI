@@ -129,8 +129,25 @@ export async function htmlProxy(node, backup) {
         return nginx()
     }
 
+
     let req_data = ""
     let url = ""
+
+    const sni = node.sni
+    const none = node.none
+    let isNodesNone = false
+    let i = 1
+
+    if (!node.isCF &&
+        node.nodes.length) {
+        for (const n of node.nodes) {
+            if (n.node == null) {
+                isNodesNone = true
+                node.none += "-0"
+                break
+            }
+        }
+    }
 
     url = proxyFun(node);
 
@@ -149,9 +166,21 @@ export async function htmlProxy(node, backup) {
         if (node.isCF) {
             node.port = n.port
         }
-        node.sni = n.sni
-        node.none = n.none
+
+        if (n.sni != null) {
+            node.sni = n.sni
+        } else {
+            node.sni = sni
+        }
+
+        if (isNodesNone) {
+            node.none = `${none}-${i}`
+        } else {
+            node.none = n.none
+        }
+
         url += proxyFun(node);
+        i += 1
     }
 
     if (node.isBase64) {
@@ -306,11 +335,24 @@ export async function jsonProxy(node, backup) {
     let outbounds = ""
     let proxys = ""
 
+    const sni = node.sni
+    const none = node.none
+    let isNodesNone = false
+    let i = 1
 
+    if (!node.isCF &&
+        node.nodes.length) {
+        for (const n of node.nodes) {
+            if (n.node == null) {
+                isNodesNone = true
+                node.none += "-0"
+                break
+            }
+        }
+    }
 
     outbounds = proxyFun(node)
     proxys = `"${node.none}"`
-
 
     for (const n of node.nodes) {
 
@@ -322,8 +364,18 @@ export async function jsonProxy(node, backup) {
         if (node.isCF) {
             node.port = n.port
         }
-        node.sni = n.sni
-        node.none = n.none
+
+        if (n.sni != null) {
+            node.sni = n.sni
+        } else {
+            node.sni = sni
+        }
+
+        if (isNodesNone) {
+            node.none = `${none}-${i}`
+        } else {
+            node.none = n.none
+        }
 
         outbounds += proxyFun(node)
 
@@ -331,7 +383,8 @@ export async function jsonProxy(node, backup) {
             proxys += `,`
         }
 
-        proxys += `"${n.none}"`
+        proxys += `"${node.none}"`
+        i += 1
     }
 
 
@@ -494,9 +547,24 @@ export async function yamlProxy(node, backup) {
     let proxies = ""
     let proxys = ""
 
+    let sni = node.sni
+    let none = node.none
+    let isNodesNone = false
+    let i = 1
+
+    if (!node.isCF &&
+        node.nodes.length) {
+        for (const n of node.nodes) {
+            if (n.node == null) {
+                isNodesNone = true
+                node.none += "-0"
+                break
+            }
+        }
+    }
+
     proxies = proxyFun(node)
     proxys = `"${node.none}"`
-
 
     for (const n of node.nodes) {
 
@@ -505,11 +573,23 @@ export async function yamlProxy(node, backup) {
         }
 
         node.addr = n.addr
+
         if (node.isCF) {
             node.port = n.port
         }
-        node.sni = n.sni
-        node.none = n.none
+
+        if (n.sni != null) {
+            node.sni = n.sni
+        } else {
+            node.sni = sni
+        }
+
+        if (isNodesNone) {
+            node.none = `${none}-${i}`
+        } else {
+            node.none = n.none
+        }
+
 
         proxies += proxyFun(node)
 
@@ -517,7 +597,9 @@ export async function yamlProxy(node, backup) {
             proxys += ","
         }
 
-        proxys += n.none
+        proxys += node.none
+
+        i += 1
 
     }
 
