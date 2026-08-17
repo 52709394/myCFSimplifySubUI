@@ -21,7 +21,7 @@ export async function _3xuiConfig(env) {
         let isCF = false
         let ips = []
 
-       console.log( JSON.stringify(data));
+       //console.log( JSON.stringify(data));
        
 
         if (SubConfig.node_cf === "true") {
