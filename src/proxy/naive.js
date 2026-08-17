@@ -7,7 +7,7 @@ export function html(proxy) {
 
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" &&  proxy.sni !=null ) {
         sni = `&sni=${proxy.sni}`
     }
 
@@ -20,7 +20,7 @@ export function json(proxy) {
 
     let sniStr = ""
 
-    if (proxy.sni) {
+    if (proxy.sni != "" &&  proxy.sni !=null ) {
         sniStr = `"server_name": "${proxy.sni}"`
     }
 

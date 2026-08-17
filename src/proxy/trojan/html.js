@@ -6,13 +6,13 @@ export function tcpTls(proxy) {
     let sni = ""
     let fp = "chrome"
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
@@ -31,15 +31,15 @@ export function wsTls(proxy) {
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -59,15 +59,15 @@ export function httpupgradeTls(proxy) {
     const none = encodeURIComponent(proxy.none)
 
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -85,15 +85,15 @@ export function xhttpTls(proxy) {
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -110,15 +110,15 @@ export function grpcTls(proxy) {
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 

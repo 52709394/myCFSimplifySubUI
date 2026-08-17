@@ -8,17 +8,17 @@ export function html(proxy) {
     let allowInsecure = ""
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.ports) {
-        proxy.ports = proxy.ports.replaceAll("-", ":")
+    if (proxy.ports != "" && proxy.ports != null) {
+        proxy.ports = proxy.ports.replaceAll(":", "-")
         ports = encodeURIComponent(proxy.ports)
         ports = `&mport=${ports}`
     }
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
@@ -30,11 +30,11 @@ export function json(proxy) {
     let ports = ""
     let sniStr = ""
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sniStr = `"server_name": "${proxy.sni}",`
     }
 
-    if (proxy.ports) {
+    if (proxy.ports != "" && proxy.ports != null) {
         proxy.ports = proxy.ports.replaceAll("-", ":")
         let str = ""
         if (proxy.ports.includes(",")) {
@@ -80,11 +80,11 @@ export function yaml(proxy) {
     let ports = ""
     let sniStr = ""
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sniStr = `sni: ${proxy.sni}`
     }
 
-    if (proxy.ports) {
+    if (proxy.ports != "" && proxy.ports != null) {
         proxy.ports = proxy.ports.replaceAll(":", "-")
         ports = `ports: ${proxy.ports}`
     }

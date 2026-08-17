@@ -10,11 +10,11 @@ export function html(proxy) {
     const none = encodeURIComponent(proxy.none)
 
 
-    if (proxy.sni) {
+    if (proxy.sni != "" &&  proxy.sni !=null ) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure != "" &&  proxy.isInsecure !=null ) {
         allowInsecure = `&allowInsecure=1`
     }
 
@@ -26,7 +26,7 @@ export function json(proxy) {
 
     let sniStr = ""
 
-    if (proxy.sni) {
+    if (proxy.sni != "" &&  proxy.sni !=null ) {
         sniStr = `"server_name": "${proxy.sni}",`
     }
 
@@ -56,7 +56,7 @@ export function yaml(proxy) {
 
     let sniStr = ""
 
-    if (proxy.sni) {
+    if (proxy.sni != "" &&  proxy.sni !=null ) {
         sniStr = `sni: ${proxy.sni}`
     }
 

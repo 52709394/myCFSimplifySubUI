@@ -141,7 +141,7 @@ export async function htmlProxy(node, backup) {
     if (!node.isCF &&
         node.nodes.length) {
         for (const n of node.nodes) {
-            if (n.none == null) {
+            if (n.none == "" || n.none == null) {
                 isNodesNone = true
                 node.none += "-0"
                 break
@@ -343,7 +343,7 @@ export async function jsonProxy(node, backup) {
     if (!node.isCF &&
         node.nodes.length) {
         for (const n of node.nodes) {
-            if (n.n.none == null) {
+            if (n.none == "" || n.none == null) {
                 isNodesNone = true
                 node.none += "-0"
                 break
@@ -555,7 +555,7 @@ export async function yamlProxy(node, backup) {
     if (!node.isCF &&
         node.nodes.length) {
         for (const n of node.nodes) {
-            if (n.none == null) {
+            if (n.none == "" || n.none == null) {
                 isNodesNone = true
                 node.none += "-0"
                 break

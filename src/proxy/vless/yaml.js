@@ -3,11 +3,11 @@ export function tcpTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
 
-  if (proxy.sni) {
+  if (proxy.sni != "" && proxy.sni != null) {
     sniStr = `sni: ${proxy.sni}`
   }
 
-  if (proxy.fp) {
+  if (proxy.fp != "" && proxy.fp != null) {
     fp = proxy.fp
   }
 
@@ -32,11 +32,11 @@ export function wsTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
 
-  if (proxy.sni) {
+  if (proxy.sni != "" && proxy.sni != null) {
     sniStr = `sni: ${proxy.sni}`
   }
 
-  if (proxy.fp) {
+  if (proxy.fp != "" && proxy.fp != null) {
     fp = proxy.fp
   }
 
@@ -62,11 +62,11 @@ export function grpcTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
 
-  if (proxy.sni) {
+  if (proxy.sni != "" && proxy.sni != null) {
     sniStr = `sni: ${proxy.sni}`
   }
 
-  if (proxy.fp) {
+  if (proxy.fp != "" && proxy.fp != null) {
     fp = proxy.fp
   }
 
@@ -91,11 +91,11 @@ export function xhttpTls(proxy) {
   let sniStr = ""
   let fp = "chrome"
 
-  if (proxy.sni) {
+  if (proxy.sni != "" && proxy.sni != null) {
     sniStr = `sni: ${proxy.sni}`
   }
 
-  if (proxy.fp) {
+  if (proxy.fp != "" && proxy.fp != null) {
     fp = proxy.fp
   }
 
@@ -121,7 +121,7 @@ export function tcpReality(proxy) {
 
   let fp = "chrome"
 
-  if (proxy.fp) {
+  if (proxy.fp != "" && proxy.fp != null) {
     fp = proxy.fp
   }
 
@@ -147,7 +147,7 @@ export function xhttpReality(proxy) {
 
   let fp = "chrome"
 
-  if (proxy.fp) {
+  if (proxy.fp != "" && proxy.fp != null) {
     fp = proxy.fp
   }
 
@@ -175,7 +175,7 @@ export function grpcReality(proxy) {
 
   let fp = "chrome"
 
-  if (proxy.fp) {
+  if (proxy.fp != "" && proxy.fp != null) {
     fp = proxy.fp
   }
 

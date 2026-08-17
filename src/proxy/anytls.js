@@ -8,11 +8,11 @@ export function html(proxy) {
     const none = encodeURIComponent(proxy.none)
 
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
@@ -24,12 +24,12 @@ export function json(proxy) {
 
     let sniStr = ""
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sniStr = `"server_name": "${proxy.sni}",`
     }
 
 
-    return  `
+    return `
 		{
 			"type": "anytls",
 			"tag": "${proxy.none}",
@@ -50,7 +50,7 @@ export function yaml(proxy) {
     let ports = ""
     let sniStr = ""
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sniStr = `sni: ${proxy.sni}`
     }
 

@@ -2,7 +2,7 @@ export function vmessWsTls(proxy) {
 
     let fp = "chrome"
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -41,7 +41,7 @@ export function vlessWSTls(proxy) {
 
     let fp = "chrome"
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
    
@@ -78,7 +78,7 @@ export function trojanWSTls(proxy) {
 
     let fp = "chrome"
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
    

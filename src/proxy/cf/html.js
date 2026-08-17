@@ -12,7 +12,7 @@ export function vmessWsTls(proxy) {
 
     let sni = proxy.sni
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -33,7 +33,7 @@ export function vlessWSTls(proxy) {
 
     let sni = proxy.sni
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -54,7 +54,7 @@ export function trojanWSTls(proxy) {
 
     let sni = proxy.sni
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 

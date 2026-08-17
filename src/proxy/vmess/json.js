@@ -40,11 +40,11 @@ export function wsTls(proxy) {
     let sniStr = ""
     let fp = "chrome"
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sniStr = `"server_name": "${proxy.sni}",`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -82,11 +82,11 @@ export function httpupgradeTls(proxy) {
     let sniStr = ""
     let fp = "chrome"
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sniStr = `"server_name": "${proxy.sni}",`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 

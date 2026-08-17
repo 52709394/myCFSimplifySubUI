@@ -6,13 +6,13 @@ export function tcpTls(proxy) {
     let sni = ""
     let fp = "chrome"
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
@@ -31,15 +31,15 @@ export function wsTls(proxy) {
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -57,15 +57,15 @@ export function httpupgradeTls(proxy) {
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -80,20 +80,20 @@ export function xhttpTls(proxy) {
     let sni = ""
     let allowInsecure = ""
     const path = encodeURIComponent(proxy.path)
-    let fp = "chrome"    
+    let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
 
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -108,21 +108,21 @@ export function grpcTls(proxy) {
     const serviceName = `&serviceName=${proxy.serviceName}`
     let sni = ""
     let allowInsecure = ""
-     let fp = "chrome"   
+    let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
 
 
 
-    if (proxy.sni) {
+    if (proxy.sni != "" && proxy.sni != null) {
         sni = `&sni=${proxy.sni}`
     }
 
-    if (proxy.isInsecure) {
+    if (proxy.isInsecure === "true" ) {
         allowInsecure = `&allowInsecure=1`
     }
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -141,7 +141,7 @@ export function tcpReality(proxy) {
     let fp = "chrome"
     const none = encodeURIComponent(proxy.none)
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -163,7 +163,7 @@ export function xhttpReality(proxy) {
     const none = encodeURIComponent(proxy.none)
 
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
@@ -185,7 +185,7 @@ export function grpcReality(proxy) {
     const none = encodeURIComponent(proxy.none)
 
 
-    if (proxy.fp) {
+    if (proxy.fp != "" && proxy.fp != null) {
         fp = proxy.fp
     }
 
